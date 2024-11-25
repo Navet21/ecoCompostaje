@@ -11,16 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('durante', function (Blueprint $table) {
+        Schema::create('despues', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
             $table->unsignedBigInteger('registro_id');
-            $table->foreign('registro_id')->references('id')->on('registro');
-            $table->enum('riego',['Si','No']);
-            $table->enum('revolver',['Si','No']);
-            $table->tinyInteger('aporte_verde')->index();
-            $table->tinyText('tipo_aporte_verde');
-            $table->tinyInteger('aporte_seco')->index();
-            $table->tinyText('tipo_aporte_seco');
+            $table->foreign('registro_id')->references('id')->on('registros');
+            $table->enum('nivelLlenadoFinal',['0','12,5','25']);
             $table->binary('foto');
             $table->tinyText('observacion');
         });
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('durante');
+        Schema::dropIfExists('despues');
     }
 };
