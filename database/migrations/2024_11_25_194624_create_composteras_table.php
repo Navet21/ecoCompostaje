@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bolo', function (Blueprint $table) {
+        Schema::create('composteras', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->tinyText('datos_relevantes');
-
+            $table->string('url');
+            $table->enum('tipo',['aporte: código 11','degradación: código 22','maduración: código 33']);
+            $table->unsignedBigInteger('centro_id');
+            $table->foreign('centro_id')->references('id')->on('centros');
         });
     }
 
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bolo');
+        Schema::dropIfExists('composteras');
     }
 };
