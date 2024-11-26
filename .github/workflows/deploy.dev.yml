@@ -18,3 +18,4 @@ jobs:
           username: navet21
           key: ${{ secrets.PRIVATE_KEY }}
           script: "cd /var/www/html/ecoCompostaje; echo ^C; git pull origin production; php artisan route:clear; sudo service php8.3-fpm reload;npm run build; npm run dev;"
+
