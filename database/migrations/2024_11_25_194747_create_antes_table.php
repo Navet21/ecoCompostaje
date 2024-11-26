@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('antes_de', function (Blueprint $table) {
+        Schema::create('antes', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
             $table->unsignedBigInteger('registro_id');
-            $table->foreign('registro_id')->references('id')->on('registro');
+            $table->foreign('registro_id')->references('id')->on('registros');
             $table->tinyInteger('temperaturaAmbiental')->index();
             $table->tinyInteger('temperaturaCompostera')->index();
             $table->enum('nivelLlenadoInical',['0','12,5','25']);
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('antes_de');
+        Schema::dropIfExists('antes');
     }
 };

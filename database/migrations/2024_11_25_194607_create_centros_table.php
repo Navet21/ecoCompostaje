@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('despues_de', function (Blueprint $table) {
+        Schema::create('centros', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('registro_id');
-            $table->foreign('registro_id')->references('id')->on('registro');
-            $table->enum('nivelLlenadoFinal',['0','12,5','25']);
-            $table->binary('foto');
-            $table->tinyText('observacion');
+            $table->timestamps();
+            $table->string('nombre');
+            $table->string('direccion');
+            $table->integer('codigo');
+            $table->string('logotipo')->nullable();
+            $table->string('personaResponsable')->nullable();
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('despues_de');
+        Schema::dropIfExists('centros');
     }
 };

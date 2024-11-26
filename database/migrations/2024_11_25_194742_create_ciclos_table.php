@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('compostera', function (Blueprint $table) {
+        Schema::create('ciclos', function (Blueprint $table) {
             $table->id();
-            $table->string('url');
-            $table->enum('tipo',['aporte: código 11','degradación: código 22','maduración: código 33']);
-            $table->unsignedBigInteger('centro_id');
-            $table->foreign('centro_id')->references('id')->on('centro');
             $table->timestamps();
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
+            $table->unsignedBigInteger('bolo_id');
+            $table->foreign('bolo_id')->references('id')->on('bolos');
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('compostera');
+        Schema::dropIfExists('ciclos');
     }
 };
