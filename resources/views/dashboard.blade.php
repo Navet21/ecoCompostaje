@@ -11,12 +11,7 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("You're logged in!") }}
                 </div>
-                <div>
-                    <button id="enviardatos">
-                        Dame el Instituto
-                    </button>
-                </div>
-                <div id="DatosCentro">
+                <div id="Datos">
                     
                 </div>
             </div>
