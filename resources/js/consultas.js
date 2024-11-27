@@ -14,7 +14,7 @@ async function consulta(url) {
     
 }
 
-const centro = await consulta("http://ecocompostaje.test/api/centros");
+const centro = await consulta("https://ecocompostaje.test/api/centros");
 
 console.log(centro.data);
 
