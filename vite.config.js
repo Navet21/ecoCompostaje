@@ -1,9 +1,9 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
+import { defineConfig } from "vite";
+import laravel from "laravel-vite-plugin";
 
 export default defineConfig({
     build: {
-        target: 'esnext'
+        target: "esnext",
     },
     plugins: [
         laravel({
