@@ -1,8 +1,5 @@
-const botonDatos = document
 
-const datos = [];
 
-// Función para consultar datos desde la API
 async function consulta(url) {
     const response = await fetch(url);
     if (!response.ok) {
@@ -14,63 +11,142 @@ async function consulta(url) {
     return await response.json();
 }
 
-// Realizamos la consulta a la API
-const registros = await consulta("/api/registros");
 
-// Iterar los datos recibidos y guardarlos en la lista `datos`
-registros.data.forEach(registro => {
-    datos.push({
-        id: registro.id,
-        user_id: registro.user_id,
-        compostera_id: registro.compostera_id,
-        bolo_id: registro.bolo_id
+// Función para consultar y generar las tablas
+async function consultarADD(e) {
+    let antes = [];
+    let durante = [];
+    let despues = [];
+    let id = e.target.textContent;
+
+    // Consulta y filtra registros de 'antes'
+    const registros = await consulta(`/api/antes`);
+    registros.data.filter(registro => registro.registro_id == id).forEach(registro => {
+        antes.push({
+            registro_id: registro.registro_id,
+            temperaturaAmbiental: registro.temperaturaAmbiental,
+            temperaturaCompostera: registro.temperaturaCompostera,
+            nivelLlenadoInical: registro.nivelLlenadoInical,
+            olor: registro.olor,
+            insectos: registro.insectos,
+            humedad: registro.humedad,
+            observacion: registro.observacion,
+        });
     });
-});
+    console.log(antes);
 
-// Función para generar la tabla en el DOM
-function generarTabla() {
-    // Seleccionamos el contenedor donde estará la tabla
-    const contenedor = document.querySelector("#Datos");
-
-    // Creamos la tabla
-    const tabla = document.createElement("table");
-    tabla.style.border = "1px solid black";
-    tabla.style.width = "100%";
-    tabla.style.borderCollapse = "collapse";
-
-    // Agregar cabeceras a la tabla
-    const cabecera = `
-        <thead>
-            <tr>
-                <th style="border: 1px solid black; padding: 8px;">ID Registro</th>
-                <th style="border: 1px solid black; padding: 8px;">ID Usuario</th>
-                <th style="border: 1px solid black; padding: 8px;">ID Compostera</th>
-                <th style="border: 1px solid black; padding: 8px;">ID Bolo</th>
-            </tr>
-        </thead>
-    `;
-    tabla.innerHTML += cabecera;
-
-    // Agregar los datos como filas
-    const cuerpo = document.createElement("tbody");
-    datos.forEach(dato => {
-        const fila = `
-            <tr id="${dato.id}">
-                <td style="border: 1px solid black; padding: 8px;">${dato.id}</td>
-                <td style="border: 1px solid black; padding: 8px;">${dato.user_id}</td>
-                <td style="border: 1px solid black; padding: 8px;">${dato.compostera_id}</td>
-                <td style="border: 1px solid black; padding: 8px;">${dato.bolo_id}</td>
-            </tr>
-        `;
-        cuerpo.innerHTML += fila;
+    // Consulta y filtra registros de 'durante'
+    const registros2 = await consulta(`/api/durantes`);
+    registros2.data.filter(registro => registro.registro_id == id).forEach(registro => {
+        durante.push({
+            registro_id: registro.registro_id,
+            revolver: registro.revolver,
+            aporte_verde: registro.aporte_verde,
+            tipo_aporte_verde: registro.tipo_aporte_verde,
+            aporte_seco: registro.aporte_seco,
+            tipo_aporte_seco: registro.tipo_aporte_seco,
+            observacion: registro.observacion,
+        });
     });
-    tabla.appendChild(cuerpo);
+    console.log(durante);
 
-    // Agregar la tabla al contenedor
-    contenedor.appendChild(tabla);
+    // Consulta y filtra registros de 'despues'
+    const registros3 = await consulta(`/api/despues`);
+    registros3.data.filter(registro => registro.registro_id == id).forEach(registro => {
+        despues.push({
+            registro_id: registro.registro_id,
+            nivelLlenadoFinal: registro.nivelLlenadoFinal,
+            observacion: registro.observacion,
+        });
+    });
+    console.log(despues);
+
+    // Generar las tablas con los datos filtrados
+    generarTablas(antes, durante, despues);
 }
 
-// Seleccionamos el botón y le añadimos un evento
-const boton = document.querySelector("#enviardatos");
+// Función para generar las tablas en el DOM
+function generarTablas(antes, durante, despues) {
+    // Seleccionamos el contenedor donde estarán las tablas
+    const contenedor = document.querySelector("#Datos");
+    contenedor.innerHTML = ""; // Limpiar contenido previo
 
-generarTabla();
+    // Función para crear una tabla
+    function crearTabla(datos, cabeceraTexto) {
+        // Crear un fragmento para optimizar la manipulación del DOM
+        const fragmento = document.createDocumentFragment();
+
+        // Crear la tabla y configurarla
+        const tabla = document.createElement("table");
+        tabla.style.border = "1px solid black";
+        tabla.style.width = "100%";
+        tabla.style.borderCollapse = "collapse";
+        tabla.style.marginBottom = "20px"; // Espaciado entre tablas
+
+        // Crear y agregar cabecera
+        const cabecera = document.createElement("thead");
+        const filaCabecera = document.createElement("tr");
+        cabeceraTexto.forEach(texto => {
+            const th = document.createElement("th");
+            th.textContent = texto;
+            th.style.border = "1px solid black";
+            th.style.padding = "8px";
+            th.style.backgroundColor = "#f0f0f0"; // Fondo claro para cabecera
+            filaCabecera.appendChild(th);
+        });
+        cabecera.appendChild(filaCabecera);
+        tabla.appendChild(cabecera);
+
+        // Crear y agregar cuerpo de la tabla
+        const cuerpo = document.createElement("tbody");
+        datos.forEach(dato => {
+            const fila = document.createElement("tr");
+            Object.values(dato).forEach(valor => {
+                const celda = document.createElement("td");
+                celda.textContent = valor;
+                celda.style.border = "1px solid black";
+                celda.style.padding = "8px";
+                fila.appendChild(celda);
+            });
+            cuerpo.appendChild(fila);
+        });
+        tabla.appendChild(cuerpo);
+
+        // Agregar la tabla al fragmento
+        fragmento.appendChild(tabla);
+
+        return fragmento;
+    }
+
+    // Función para crear un título antes de cada tabla
+    function crearTitulo(texto) {
+        const titulo = document.createElement("h3");
+        titulo.textContent = texto;
+        titulo.style.margin = "20px 0 10px";
+        titulo.style.fontSize = "1.5rem";
+        titulo.style.color = "#333";
+        return titulo;
+    }
+
+    // Crear y agregar la tabla de 'antes'
+    contenedor.appendChild(crearTitulo("Datos Antes"));
+    const cabeceraAntes = ["ID Registro", "Temperatura Ambiental", "Temperatura Compostera", "Nivel Llenado Inicial", "Olor", "Insectos", "Humedad", "Observación"];
+    const tablaAntes = crearTabla(antes, cabeceraAntes);
+    contenedor.appendChild(tablaAntes);
+
+    // Crear y agregar la tabla de 'durante'
+    contenedor.appendChild(crearTitulo("Datos Durante"));
+    const cabeceraDurante = ["ID Registro", "Revolver", "Aporte Verde", "Tipo Aporte Verde", "Aporte Seco", "Tipo Aporte Seco", "Observación"];
+    const tablaDurante = crearTabla(durante, cabeceraDurante);
+    contenedor.appendChild(tablaDurante);
+
+    // Crear y agregar la tabla de 'despues'
+    contenedor.appendChild(crearTitulo("Datos Después"));
+    const cabeceraDespues = ["ID Registro", "Nivel Llenado Final", "Observación"];
+    const tablaDespues = crearTabla(despues, cabeceraDespues);
+    contenedor.appendChild(tablaDespues);
+}
+
+
+
+export {consultarADD, generarTablas};
