@@ -1,4 +1,7 @@
+import {consultarADD, generarTablas} from "/resources/js/registrosEspecificos";
+
 const datos = [];
+
 
 // Función para consultar datos desde la API
 async function consulta(url) {
@@ -13,7 +16,7 @@ async function consulta(url) {
 }
 
 // Realizamos la consulta a la API
-const registros = await consulta("http://ecocompostaje.test/api/registros");
+const registros = await consulta("/api/registros");
 
 // Iterar los datos recibidos y guardarlos en la lista `datos`
 registros.data.forEach(registro => {
@@ -30,45 +33,76 @@ function generarTabla() {
     // Seleccionamos el contenedor donde estará la tabla
     const contenedor = document.querySelector("#Datos");
 
+    // Limpiamos el contenedor antes de agregar la tabla
+    contenedor.innerHTML = "";
+
+    // Creamos un fragmento para construir la tabla
+    const fragmento = document.createDocumentFragment();
+
     // Creamos la tabla
     const tabla = document.createElement("table");
-    tabla.style.border = "1px solid black";
-    tabla.style.width = "100%";
-    tabla.style.borderCollapse = "collapse";
+    tabla.className = "w-full border-collapse border border-gray-300";
 
-    // Agregar cabeceras a la tabla
-    const cabecera = `
-        <thead>
-            <tr>
-                <th style="border: 1px solid black; padding: 8px;">ID Registro</th>
-                <th style="border: 1px solid black; padding: 8px;">ID Usuario</th>
-                <th style="border: 1px solid black; padding: 8px;">ID Compostera</th>
-                <th style="border: 1px solid black; padding: 8px;">ID Bolo</th>
-            </tr>
-        </thead>
-    `;
-    tabla.innerHTML += cabecera;
+    // Crear y agregar cabeceras a la tabla
+    const cabecera = document.createElement("thead");
+    const filaCabecera = document.createElement("tr");
+    filaCabecera.className = "bg-green-500 text-white font-bold"; // Cabecera verde claro con texto blanco
 
-    // Agregar los datos como filas
+    const cabeceras = ["ID Registro", "ID Usuario", "ID Compostera", "ID Bolo"];
+    cabeceras.forEach(texto => {
+        const th = document.createElement("th");
+        th.className = "border border-gray-300 px-4 py-2 text-left";
+        th.textContent = texto;
+        filaCabecera.appendChild(th);
+    });
+    cabecera.appendChild(filaCabecera);
+    tabla.appendChild(cabecera);
+
+    // Crear cuerpo de la tabla
     const cuerpo = document.createElement("tbody");
     datos.forEach(dato => {
-        const fila = `
-            <tr id="${dato.id}">
-                <td style="border: 1px solid black; padding: 8px;"><a href="#">${dato.id}</a></td>
-                <td style="border: 1px solid black; padding: 8px;">${dato.user_id}</td>
-                <td style="border: 1px solid black; padding: 8px;">${dato.compostera_id}</td>
-                <td style="border: 1px solid black; padding: 8px;">${dato.bolo_id}</td>
-            </tr>
-        `;
-        cuerpo.innerHTML += fila;
+        const fila = document.createElement("tr");
+
+        const celdaId = document.createElement("td");
+        celdaId.className = "border border-gray-300 px-4 py-2";
+        const enlace = document.createElement("a");
+        enlace.id = dato.id;
+        enlace.href = "#";
+        enlace.textContent = dato.id;
+        enlace.className = "text-blue-600 hover:underline";
+        enlace.addEventListener("click", consultarADD);
+        celdaId.appendChild(enlace);
+        fila.appendChild(celdaId);
+
+        const celdaUserId = document.createElement("td");
+        celdaUserId.className = "border border-gray-300 px-4 py-2";
+        celdaUserId.textContent = dato.user_id;
+        fila.appendChild(celdaUserId);
+
+        const celdaComposteraId = document.createElement("td");
+        celdaComposteraId.className = "border border-gray-300 px-4 py-2";
+        celdaComposteraId.textContent = dato.compostera_id;
+        fila.appendChild(celdaComposteraId);
+
+        const celdaBoloId = document.createElement("td");
+        celdaBoloId.className = "border border-gray-300 px-4 py-2";
+        celdaBoloId.textContent = dato.bolo_id;
+        fila.appendChild(celdaBoloId);
+
+        cuerpo.appendChild(fila);
     });
+
+    // Agregar el cuerpo a la tabla
     tabla.appendChild(cuerpo);
 
-    // Agregar la tabla al contenedor
-    contenedor.appendChild(tabla);
+    // Agregar la tabla al fragmento
+    fragmento.appendChild(tabla);
+
+    // Agregar el fragmento al contenedor
+    contenedor.appendChild(fragmento);
 }
 
-// Seleccionamos el botón y le añadimos un evento
-const boton = document.querySelector("#enviardatos");
+
+
 
 generarTabla();
