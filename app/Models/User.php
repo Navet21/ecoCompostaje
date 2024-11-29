@@ -45,4 +45,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function registros(){
+        return $this->hasMany(Registro::class);
+    }
+
+    public function centros(){
+        return $this->belongsTo(Centro::class);
+    }
 }

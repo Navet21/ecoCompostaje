@@ -1,6 +1,13 @@
-import {consultarADD, generarTablas} from "/resources/js/registrosEspecificos";
+import {consultarADD} from "/resources/js/registrosEspecificos";
+import {generarFormularioRegistro} from "/resources/js/formulario"
 
 const datos = [];
+const boton = document.querySelector('#nuevoRegistro');
+
+
+
+
+boton.addEventListener("click",generarFormularioRegistro);
 
 
 // Función para consultar datos desde la API
@@ -48,7 +55,7 @@ function generarTabla() {
     const filaCabecera = document.createElement("tr");
     filaCabecera.className = "bg-green-500 text-white font-bold"; // Cabecera verde claro con texto blanco
 
-    const cabeceras = ["ID Registro", "ID Usuario", "ID Compostera", "ID Bolo"];
+    const cabeceras = ["ID Registro", "Username", "ID Compostera", "ID Bolo"];
     cabeceras.forEach(texto => {
         const th = document.createElement("th");
         th.className = "border border-gray-300 px-4 py-2 text-left";

@@ -12,4 +12,24 @@ class Registro extends Model
         'compostera_id',
         'bolo_id',
         ];
+    
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function compostera(){
+        return $this->belongsTo(Compostera::class);
+    }
+
+    public function antes(){
+        return $this->hasMany(Antes::class);
+    }
+
+    public function durante(){
+        return $this->hasMany(Durante::class);
+    }
+
+    public function despues(){
+        return $this->hasMany(Despues::class);
+    }
 }

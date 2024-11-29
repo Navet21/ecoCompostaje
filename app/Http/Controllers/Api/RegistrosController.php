@@ -12,4 +12,9 @@ class RegistrosController extends Controller
     use DisableAuthorization;
     protected $model = Registro::class; // or "App\Models\Post"
 
+    public function ultimoRegistro(){
+        $ultimoRegistro = Registro::latest('id')->first();
+        return response()->json($ultimoRegistro,200);
+    }
+
 }

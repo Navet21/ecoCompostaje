@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\AntesController;
+use App\Http\Controllers\Api\RegistroAntesController;
+use App\Http\Controllers\Api\RegistroDurantesController;
+use App\Http\Controllers\Api\RegistroDespuesController;
 use App\Http\Controllers\Api\RegistrosController;
+use App\Http\Controllers\Api\UserRegistrosController;
 use Illuminate\Support\Facades\Route;
 use Orion\Facades\Orion;
 use App\Http\Controllers\Api\CentrosController;
@@ -36,3 +40,15 @@ Route::group(['as' => 'api.'], function() {
 Route::group(['as' => 'api.'], function() {
     Orion::resource('despues', DespuesController::class);
 });
+
+//Relaciones
+
+Route::group(['as' => 'api.'], function() {
+    Orion::hasManyResource('users', 'registros', UserRegistrosController::class);
+    Orion::hasManyResource('registros', 'antes', RegistroAntesController::class);
+    Orion::hasManyResource('registros', 'durantes', RegistroDurantesController::class);
+    Orion::hasManyResource('registros', 'despues', RegistroDespuesController::class);
+});
+
+//Obtener ultimo registro
+Route::get('registro/last', [RegistrosController::class,'ultimoRegistro']);

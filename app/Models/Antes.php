@@ -17,4 +17,9 @@ class Antes extends Model
         'foto',
         'observacion'
         ];
+
+    public function registro(){
+        return $this->belongsTo(Registro::class,'registro_id');
+    }
 }
+
