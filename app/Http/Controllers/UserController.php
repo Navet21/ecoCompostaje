@@ -16,11 +16,25 @@ class UserController extends Controller
      */
     public function index(Request $request): View
     {
-        $users = User::paginate();
+        // Filtros
+        $search = $request->input('search');
+        $adminFilter = $request->input('admin_filter');
 
-        return view('user.index', compact('users'))
+        $usersQuery = User::query();
+
+        if ($search) {
+            $usersQuery->where('name', 'like', '%' . $search . '%');
+        }
+        if ($adminFilter !== null) {
+            $usersQuery->where('admin', $adminFilter);
+        }
+
+        $users = $usersQuery->paginate();
+
+        return view('user.index', compact('users', 'search', 'adminFilter'))
             ->with('i', ($request->input('page', 1) - 1) * $users->perPage());
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -37,10 +51,12 @@ class UserController extends Controller
      */
     public function store(UserRequest $request): RedirectResponse
     {
-        User::create($request->validated());
+        $data = $request->validated();
+        $data['admin'] = $data['admin'] ?? 0;
 
-        return Redirect::route('users.index')
-            ->with('success', 'User created successfully.');
+        User::create($data);
+
+        return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
     /**
@@ -68,12 +84,22 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user): RedirectResponse
     {
-        $user->update($request->validated());
 
-        return Redirect::route('users.index')
-            ->with('success', 'User updated successfully');
+        $data = $request->validated();
+
+
+        $data['admin'] = $data['admin'] ?? 0;
+
+
+        $user->update($data);
+
+
+        return Redirect::route('users.index')->with('success', 'User updated successfully');
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy($id): RedirectResponse
     {
         User::find($id)->delete();
