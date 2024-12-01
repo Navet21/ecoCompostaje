@@ -11,4 +11,8 @@ class Centro extends Model
         'direccion',
         'codigo'
         ];
+
+    public function usuarios(){
+        return $this->hasMany(User::class);
+    }
 }

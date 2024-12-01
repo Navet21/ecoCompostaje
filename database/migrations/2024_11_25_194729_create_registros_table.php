@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('registros', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->boolean('inicioCiclo')->default(0);
+            $table->unsignedBigInteger('ciclo_id');
+            $table->foreign('ciclo_id')->references('id')->on('ciclos')->onDelete('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('compostera_id');
-            $table->foreign('compostera_id')->references('id')->on('composteras');
+            $table->foreign('compostera_id')->references('id')->on('composteras')->onDelete('cascade');
         });
     }
 

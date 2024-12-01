@@ -20,13 +20,14 @@ async function consultarADD(e) {
     let id = e.target.textContent;
 
     // Consulta y filtra registros de 'antes'
-    const registros = await consulta(`/api/antes`);
-    registros.data.filter(registro => registro.registro_id == id).forEach(registro => {
+    const registros = await consulta(`/api/registros/${id}/antes`);
+    console.log(registros);
+    registros.data.forEach(registro => {
         antes.push({
             registro_id: registro.registro_id,
             temperaturaAmbiental: registro.temperaturaAmbiental,
             temperaturaCompostera: registro.temperaturaCompostera,
-            nivelLlenadoInical: registro.nivelLlenadoInical,
+            nivelLlenadoInicial: registro.nivelLlenadoInicial,
             olor: registro.olor,
             insectos: registro.insectos,
             humedad: registro.humedad,
@@ -36,8 +37,8 @@ async function consultarADD(e) {
     console.log(antes);
 
     // Consulta y filtra registros de 'durante'
-    const registros2 = await consulta(`/api/durantes`);
-    registros2.data.filter(registro => registro.registro_id == id).forEach(registro => {
+    const registros2 = await consulta(`/api/registros/${id}/durantes`);
+    registros2.data.forEach(registro => {
         durante.push({
             registro_id: registro.registro_id,
             revolver: registro.revolver,
@@ -51,8 +52,8 @@ async function consultarADD(e) {
     console.log(durante);
 
     // Consulta y filtra registros de 'despues'
-    const registros3 = await consulta(`/api/despues`);
-    registros3.data.filter(registro => registro.registro_id == id).forEach(registro => {
+    const registros3 = await consulta(`/api/registros/${id}/despues`);
+    registros3.data.forEach(registro => {
         despues.push({
             registro_id: registro.registro_id,
             nivelLlenadoFinal: registro.nivelLlenadoFinal,

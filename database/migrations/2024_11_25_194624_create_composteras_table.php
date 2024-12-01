@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('url');
-            $table->enum('tipo',['aporte: código 11','degradación: código 22','maduración: código 33']);
+            $table->enum('tipo',['aporte','degradacion','maduracion']);
             $table->unsignedBigInteger('centro_id');
-            $table->foreign('centro_id')->references('id')->on('centros');
+            $table->foreign('centro_id')->references('id')->on('centros')->onDelete('cascade');
         });
     }
 

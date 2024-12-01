@@ -65,11 +65,16 @@ class User extends Authenticatable
         ];
     }
 
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function registros()
     {
         return $this->hasMany(\App\Models\Registro::class, 'user_id', 'id');
+    }
+
+    public function centros(){
+        return $this->belongsTo(Centro::class);
     }
 }
