@@ -1,7 +1,15 @@
-import {consultarADD, generarTablas} from "/resources/js/registrosEspecificos";
+import { consultarADD } from "/resources/js/registrosEspecificos";
+import { generarFormularioRegistro } from "/resources/js/formulario";
 
-const datos = [];
+let datos = []; // Array para almacenar los datos de la API
+let paginaActual = 1; // Página inicial
+const boton = document.querySelector('#nuevoRegistro');
+const contenedor = document.querySelector("#Datos");
+const btnAnterior = document.querySelector("#btnAnterior");
+const btnSiguiente = document.querySelector("#btnSiguiente");
+const spanPaginaActual = document.querySelector("#paginaActual");
 
+boton.addEventListener("click", generarFormularioRegistro);
 
 // Función para consultar datos desde la API
 async function consulta(url) {
@@ -15,40 +23,51 @@ async function consulta(url) {
     return await response.json();
 }
 
-// Realizamos la consulta a la API
-const registros = await consulta("/api/registros");
+// Función para cargar datos de una página específica
+async function cargarDatos(pagina) {
+    try {
+        const url = `/api/registros?page=${pagina}&per_page=3`;
+        const registros = await consulta(url);
+        console.log(registros.meta);
+        // Limpiar y actualizar los datos
+        datos = [];
+        registros.data.forEach(registro => {
+            datos.push({
+                id: registro.id,
+                user_id: registro.user_id,
+                compostera_id: registro.compostera_id,
+                bolo_id: registro.bolo_id
+            });
+        });
 
-// Iterar los datos recibidos y guardarlos en la lista `datos`
-registros.data.forEach(registro => {
-    datos.push({
-        id: registro.id,
-        user_id: registro.user_id,
-        compostera_id: registro.compostera_id,
-        bolo_id: registro.bolo_id
-    });
-});
+        // Actualizar la tabla con los nuevos datos
+        generarTabla();
+
+        // Actualizar botones de paginación y número de página
+        manejarBotones(registros.meta);
+    } catch (error) {
+        console.error("Error al cargar datos:", error.message);
+    }
+}
 
 // Función para generar la tabla en el DOM
 function generarTabla() {
-    // Seleccionamos el contenedor donde estará la tabla
-    const contenedor = document.querySelector("#Datos");
-
-    // Limpiamos el contenedor antes de agregar la tabla
+    // Limpiar el contenedor
     contenedor.innerHTML = "";
 
-    // Creamos un fragmento para construir la tabla
+    // Crear un fragmento para construir la tabla
     const fragmento = document.createDocumentFragment();
 
-    // Creamos la tabla
+    // Crear la tabla
     const tabla = document.createElement("table");
     tabla.className = "w-full border-collapse border border-gray-300";
 
     // Crear y agregar cabeceras a la tabla
     const cabecera = document.createElement("thead");
     const filaCabecera = document.createElement("tr");
-    filaCabecera.className = "bg-green-500 text-white font-bold"; // Cabecera verde claro con texto blanco
+    filaCabecera.className = "bg-green-500 text-white font-bold";
 
-    const cabeceras = ["ID Registro", "ID Usuario", "ID Compostera", "ID Bolo"];
+    const cabeceras = ["ID Registro", "Username", "ID Compostera", "ID Bolo"];
     cabeceras.forEach(texto => {
         const th = document.createElement("th");
         th.className = "border border-gray-300 px-4 py-2 text-left";
@@ -102,7 +121,25 @@ function generarTabla() {
     contenedor.appendChild(fragmento);
 }
 
+// Función para manejar los botones "Siguiente" y "Anterior"
+function manejarBotones(meta) {
+    btnAnterior.disabled = meta.current_page === 1; // Deshabilitar si está en la primera página
+    btnSiguiente.disabled = meta.current_page === meta.last_page; // Deshabilitar si está en la última página
+    spanPaginaActual.textContent = meta.current_page; // Actualizar número de página
+}
 
+// Eventos de los botones
+btnAnterior.addEventListener("click", () => {
+    if (paginaActual > 1) {
+        paginaActual--;
+        cargarDatos(paginaActual);
+    }
+});
 
+btnSiguiente.addEventListener("click", () => {
+    paginaActual++;
+    cargarDatos(paginaActual);
+});
 
-generarTabla();
+// Cargar los datos iniciales
+cargarDatos(paginaActual);

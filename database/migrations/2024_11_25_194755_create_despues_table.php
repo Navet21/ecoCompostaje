@@ -16,9 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('registro_id');
             $table->foreign('registro_id')->references('id')->on('registros');
-            $table->enum('nivelLlenadoFinal',['0','12,5','25']);
-            $table->binary('foto');
-            $table->tinyText('observacion');
+            $table->enum('nivelLlenadoFinal',['0','12,5','25','37.5','50','67.5','75','87.5','100'])->nullable();
+            $table->tinyText('observacion')->nullable();
         });
     }
 
