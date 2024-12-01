@@ -4,7 +4,7 @@ import laravel from "file:///C:/laragon/www/ecoCompostaje/node_modules/laravel-v
 var vite_config_default = defineConfig({
   plugins: [
     laravel({
-      input: ["resources/css/app.css", "resources/js/app.js",'resources/js/registrosEspecificos.js'],
+      input: ["resources/css/app.css", "resources/js/app.js",'resources/js/registrosEspecificos.js','resources/js/formulario.js'],
       refresh: true
     })
   ]

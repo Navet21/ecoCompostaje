@@ -15,15 +15,14 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->unsignedBigInteger('registro_id');
-            $table->foreign('registro_id')->references('id')->on('registros');
-            $table->tinyInteger('temperaturaAmbiental')->index();
-            $table->tinyInteger('temperaturaCompostera')->index();
-            $table->enum('nivelLlenadoInical',['0','12,5','25']);
-            $table->enum('olor',['Podrido','Sin olor','Amoníaco']);
-            $table->enum('insectos',['Si','No']);
-            $table->enum('humedad',['Exceso','Buena','Defecto']);
-            $table->binary('foto');
-            $table->tinyText('observacion');
+            $table->foreign('registro_id')->references('id')->on('registros')->onDelete('cascade');
+            $table->tinyInteger('temperaturaAmbiental')->index()->nullable();
+            $table->tinyInteger('temperaturaCompostera')->index()->nullable();
+            $table->enum('nivelLlenadoInicial',['0','12,5','25','37.5','50','67.5','75','87.5','100'])->nullable();
+            $table->enum('olor',['Podrido','Sin olor','Amoníaco'])->nullable();
+            $table->enum('insectos',['Si','No'])->nullable();
+            $table->enum('humedad',['Exceso','Buena','Defecto'])->nullable();
+            $table->tinyText('observacion')->nullable();
         });
     }
 

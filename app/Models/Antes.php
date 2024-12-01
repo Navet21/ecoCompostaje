@@ -10,11 +10,16 @@ class Antes extends Model
         'registro_id',
         'temperaturaAmbiental',
         'temperaturaCompostera',
-        'nivelLlenadoInical',
+        'nivelLlenadoInicial',
         'olor',
         'insectos',
         'humedad',
         'foto',
         'observacion'
         ];
+
+    public function registro(){
+        return $this->belongsTo(Registro::class,'registro_id');
+    }
 }
+
