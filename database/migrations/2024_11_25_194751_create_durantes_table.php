@@ -15,15 +15,14 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->unsignedBigInteger('registro_id');
-            $table->foreign('registro_id')->references('id')->on('registros');
-            $table->enum('riego',['Si','No']);
-            $table->enum('revolver',['Si','No']);
-            $table->tinyInteger('aporte_verde')->index();
-            $table->tinyText('tipo_aporte_verde');
-            $table->tinyInteger('aporte_seco')->index();
-            $table->tinyText('tipo_aporte_seco');
-            $table->binary('foto');
-            $table->tinyText('observacion');
+            $table->foreign('registro_id')->references('id')->on('registros')->onDelete('cascade');
+            $table->enum('riego',['Si','No'])->nullable();
+            $table->enum('revolver',['Si','No'])->nullable();
+            $table->tinyInteger('aporte_verde')->index()->nullable();
+            $table->tinyText('tipo_aporte_verde')->nullable();
+            $table->tinyInteger('aporte_seco')->index()->nullable();
+            $table->tinyText('tipo_aporte_seco')->nullable();
+            $table->tinyText('observacion')->nullable();
         });
     }
 

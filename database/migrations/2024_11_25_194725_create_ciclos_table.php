@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('registros', function (Blueprint $table) {
+        Schema::create('ciclos', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
             $table->unsignedBigInteger('bolo_id');
-            $table->foreign('bolo_id')->references('id')->on('bolos');
+            $table->boolean('terminado')->default(0);
+            $table->foreign('bolo_id')->references('id')->on('bolos')->onDelete('cascade');
         });
     }
 
@@ -22,8 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('registros', function (Blueprint $table) {
-            $table->dropColumn('bolo_id');
-        });
+        Schema::dropIfExists('ciclos');
     }
 };

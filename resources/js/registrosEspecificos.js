@@ -27,7 +27,7 @@ async function consultarADD(e) {
             registro_id: registro.registro_id,
             temperaturaAmbiental: registro.temperaturaAmbiental,
             temperaturaCompostera: registro.temperaturaCompostera,
-            nivelLlenadoInical: registro.nivelLlenadoInical,
+            nivelLlenadoInicial: registro.nivelLlenadoInicial,
             olor: registro.olor,
             insectos: registro.insectos,
             humedad: registro.humedad,
