@@ -7,40 +7,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-/**
- * Class User
- *
- * @property $id
- * @property $name
- * @property $email
- * @property $password
- * @property $admin
- * @property $remember_token
- * @property $created_at
- * @property $updated_at
- *
- * @property Registro[] $registros
- * @package App
- * @mixin \Illuminate\Database\Eloquent\Builder
- */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * Pagination per page.
-     *
-     * @var int
-     */
-    protected $perPage = 20;
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'email', 'password', 'admin'];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -63,18 +44,5 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function registros()
-    {
-        return $this->hasMany(\App\Models\Registro::class, 'user_id', 'id');
-    }
-
-    public function centros(){
-        return $this->belongsTo(Centro::class);
     }
 }
