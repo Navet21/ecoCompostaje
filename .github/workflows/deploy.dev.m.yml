@@ -17,4 +17,4 @@ jobs:
           port: 2222
           username: miriam
           key: ${{ secrets.PRIVATE_KEY_DEV }}
-          script: "cd /var/www/html/ecoCompostaje; git pull origin developer; php artisan route:clear; sudo service php8.3-fpm reload;npm run build;"
+          script: "cd /var/www/html/ecoCompostaje; git reset --hard; git pull origin developer; php artisan route:clear; sudo service php8.3-fpm reload;npm run build;"
