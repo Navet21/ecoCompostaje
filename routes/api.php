@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AntesController;
+use App\Http\Controllers\Api\ComposteraRegistrosController;
 use App\Http\Controllers\Api\RegistroAntesController;
 use App\Http\Controllers\Api\RegistroDurantesController;
 use App\Http\Controllers\Api\RegistroDespuesController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Api\UserRegistrosController;
 use App\Http\Controllers\Api\BoloCiclosController;
 use App\Http\Controllers\Api\CiclosController;
 use App\Http\Controllers\Api\BoloController;
+use App\Http\Controllers\Api\ComposterasController;
 use Illuminate\Support\Facades\Route;
 use Orion\Facades\Orion;
 use App\Http\Controllers\Api\CentrosController;
@@ -22,6 +24,11 @@ Route::get('/user', function (Request $request) {
 //Rutas para los centros, no nos interesa
 Route::group(['as' => 'api.'], function() {
     Orion::resource('centros', CentrosController::class);
+});
+
+//Rutas para los composteras
+Route::group(['as' => 'api.'], function() {
+    Orion::resource('composteras', ComposterasController::class);
 });
 
 //Rutas para los Bolos
@@ -62,6 +69,7 @@ Route::group(['as' => 'api.'], function() {
     Orion::hasManyResource('registros', 'durantes', RegistroDurantesController::class);
     Orion::hasManyResource('registros', 'despues', RegistroDespuesController::class);
     Orion::hasManyResource('bolos', 'ciclos', BoloCiclosController::class);
+    Orion::hasManyResource('composteras', 'registros', ComposteraRegistrosController::class);
 });
 
 //Obtener ultimo registro

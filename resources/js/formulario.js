@@ -1,6 +1,7 @@
-
+import { cargarDatos } from "/resources/js/registros";
 
 const boton = document.querySelector('#nuevoRegistro');
+const paginacion = document.querySelector('#paginacion');
 let user_id = document.querySelector('#user_id').value;
 let nombreBolo;
 let datosBolo ={};
@@ -13,6 +14,8 @@ let datosFormularioDurante = {};
 function generarFormularioRegistro() {
     // Ocultar el botón inicial
     boton.classList.add("hidden");
+    paginacion.classList.add("hidden");
+
 
     // Seleccionar el contenedor donde estará el formulario
     const contenedor = document.querySelector("#Datos");
@@ -120,11 +123,43 @@ function generarFormularioRegistro() {
                     labelPerteneceBolo.classList.add("block", "text-gray-700", "text-sm", "font-bold", "mb-2");
                     contenedorBolo.appendChild(labelPerteneceBolo);
 
-                    const inputPerteneceBolo = document.createElement("input");
-                    inputPerteneceBolo.type = "text";
-                    inputPerteneceBolo.placeholder = "Nombre del bolo";
-                    inputPerteneceBolo.classList.add("shadow", "appearance-none", "border", "rounded", "w-full", "py-2", "px-3", "text-gray-700", "leading-tight", "focus:outline-none", "focus:shadow-outline");
-                    contenedorBolo.appendChild(inputPerteneceBolo);
+                    // Crear el select
+                    const inputNombreBolo = document.createElement("select");
+                    inputNombreBolo.classList.add(
+                        "shadow", "appearance-none", "border", "rounded", "w-full", 
+                        "py-2", "px-3", "text-gray-700", "leading-tight", 
+                        "focus:outline-none", "focus:shadow-outline"
+                    );
+                    inputNombreBolo.setAttribute("data-placeholder", "Nombre del bolo");
+
+                    // Añadir opción por defecto
+                    const opcionDefault = document.createElement("option");
+                    opcionDefault.textContent = "Seleccione un bolo";
+                    opcionDefault.value = "";
+                    opcionDefault.disabled = true;
+                    opcionDefault.selected = true;
+                    inputNombreBolo.appendChild(opcionDefault);
+
+                // Obtener bolos con 'terminado = false' (simulación)
+                    fetch('/api/bolos') // Ruta para obtener bolos desde tu backend
+                        .then(response => response.json())
+                        .then(bolos => {
+                            // Filtrar los bolos cuyo campo 'terminado' sea false
+                            const bolosDisponibles = bolos.data.filter(bolo => !bolo.terminado);
+                            console.log(bolosDisponibles);
+
+                            // Añadir opciones al select
+                            bolosDisponibles.forEach(bolo => {
+                                const opcion = document.createElement("option");
+                                opcion.textContent = bolo.nombre; // Campo 'nombre' del bolo
+                                opcion.value = bolo.nombre; // Campo 'id' del bolo (o el que necesites)
+                                inputNombreBolo.appendChild(opcion);
+                            });
+                        })
+                        .catch(error => console.error("Error al obtener los bolos:", error));
+
+                        // Añadir el select al contenedor
+                        contenedorBolo.appendChild(inputNombreBolo);
                 }
             });
         } else if (selectCompostera.value === "Compostera 3") {
@@ -150,7 +185,7 @@ function generarFormularioRegistro() {
     // Escuchar cambios en la compostera seleccionada
     selectCompostera.addEventListener("change", actualizarFormulario);
 
-    // Crear el botón para pasar al siguiente formulario
+
     const botonSiguiente = document.createElement("button");
     botonSiguiente.type = "button";
     botonSiguiente.textContent = "Siguiente";
@@ -175,19 +210,20 @@ function generarFormularioRegistro() {
 
         if (document.querySelector("textarea[placeholder='Descripción del bolo']")){
             datosBolo = { 
-                nombre: document.querySelector("input[placeholder='Nombre del bolo']").value, datos_relevantes: document.querySelector("textarea[placeholder='Descripción del bolo']").value 
+                nombre: document.querySelector("input[placeholder='Nombre del bolo']").value, 
+                datos_relevantes: document.querySelector("textarea[placeholder='Descripción del bolo']").value 
             };
             nombreBolo = document.querySelector("input[placeholder='Nombre del bolo']").value;
             console.log(datosBolo); 
             console.log(nombreBolo);
         } else{
-            nombreBolo = document.querySelector("input[placeholder='Nombre del bolo']").value; console.log("Nombre del bolo:", nombreBolo); }
-        console.log(datosBolo);
+            nombreBolo = document.querySelector("select[data-placeholder='Nombre del bolo']").value; 
+            console.log("Nombre del bolo:", nombreBolo); }
+            console.log(datosBolo);
         
         // Código para redirigir o procesar siguiente formulario
         generarFormularioAntes();
     });
-
     formulario.appendChild(botonSiguiente);
     contenedor.appendChild(formulario);
 
@@ -253,10 +289,16 @@ function generarFormularioAntes() {
         formulario.appendChild(document.createElement("br"));
     });
 
+    const botonAtras = document.createElement("button");
+    botonAtras.type = "button";
+    botonAtras.textContent = "Atras";
+    botonAtras.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
+
     // Crear el botón para pasar al siguiente formulario
     const botonSiguiente = document.createElement("button");
     botonSiguiente.type = "button";
     botonSiguiente.textContent = "Siguiente";
+    botonSiguiente.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
     botonSiguiente.addEventListener("click", function () {
         // Guardar los datos del formulario en la variable datosFormularioAntes
         let temperaturaAmbiental = parseInt(inputs.temperaturaAmbiental.value);
@@ -276,7 +318,13 @@ function generarFormularioAntes() {
         generarFormularioDurante();
     });
 
+    botonAtras.addEventListener("click",()=>{
+        contenedor.innerHTML = "";
+        generarFormularioRegistro();
+    });
+    formulario.appendChild(botonAtras);
     formulario.appendChild(botonSiguiente);
+    
 
     // Agregar el formulario al contenedor
     contenedor.appendChild(formulario);
@@ -329,11 +377,15 @@ function generarFormularioDurante() {
         formulario.appendChild(input);
         formulario.appendChild(document.createElement("br"));
     });
-
+    const botonAtras = document.createElement("button");
+    botonAtras.type = "button";
+    botonAtras.textContent = "Atras";
+    botonAtras.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
     // Crear el botón para pasar al siguiente formulario
     const botonSiguiente = document.createElement("button");
     botonSiguiente.type = "button";
     botonSiguiente.textContent = "Siguiente";
+    botonSiguiente.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
     botonSiguiente.addEventListener("click", function () {
         let aporte_seco = parseInt(inputs.aporte_seco.value);
         let aporte_verde = parseInt(inputs.aporte_verde.value);
@@ -353,6 +405,12 @@ function generarFormularioDurante() {
         generarFormularioDespues(); // Puedes implementar esta función si necesitas otro formulario
     });
 
+    botonAtras.addEventListener("click",()=>{
+        contenedor.innerHTML = "";
+        boton.classList.add("hidden");
+        generarFormularioAntes();
+    });
+    formulario.appendChild(botonAtras);
     formulario.appendChild(botonSiguiente);
 
     // Agregar el formulario al contenedor
@@ -403,9 +461,14 @@ function generarFormularioDespues() {
     });
 
     // Crear el botón para enviar los datos
+    const botonAtras = document.createElement("button");
+    botonAtras.type = "button";
+    botonAtras.textContent = "Atras";
+    botonAtras.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
     const botonEnviar = document.createElement("button");
     botonEnviar.type = "button";
     botonEnviar.textContent = "Enviar";
+    botonEnviar.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
     botonEnviar.addEventListener("click", function () {
         // Guardar los datos del formulario en la variable datosFormularioDespues
         datosFormularioDespues = {
@@ -416,6 +479,11 @@ function generarFormularioDespues() {
         insertarRegistros(datosFormularioRegistro, datosFormularioAntes, datosFormularioDurante, datosFormularioDespues)
     });
 
+    botonAtras.addEventListener("click",()=>{
+        contenedor.innerHTML = "";
+        generarFormularioDurante();
+    });
+    formulario.appendChild(botonAtras);
     formulario.appendChild(botonEnviar);
 
 
@@ -486,7 +554,7 @@ async function insertarRegistros(datosFormularioRegistro, datosFormularioAntes, 
         console.log(generarFechaAleatoria());
         
         if (datosFormularioRegistro.ciclo_id == null) {
-            const datosCiclo = {
+            datosCiclo = {
                 fecha_inicio: obtenerFechaFormatoCorrecto(),
                 fecha_fin: generarFechaAleatoria(), // Ejemplo de fecha en formato correcto (YYYY-MM-DD)
                 bolo_id: bolo_id,
@@ -497,6 +565,7 @@ async function insertarRegistros(datosFormularioRegistro, datosFormularioAntes, 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    
                 },
                 body: JSON.stringify(datosCiclo),
             });

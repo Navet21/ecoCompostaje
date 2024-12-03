@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->date('fecha_inicio');
-            $table->date('fecha_fin');
+            $table->date('fecha_fin')->nullable();
             $table->unsignedBigInteger('bolo_id');
             $table->boolean('terminado')->default(0);
             $table->foreign('bolo_id')->references('id')->on('bolos')->onDelete('cascade');
+            $table->unsignedBigInteger('compostera_id')->references('id')->on('composteras')->onDelete('cascade');
         });
     }
 

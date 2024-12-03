@@ -1,5 +1,6 @@
 import { consultarADD } from "/resources/js/registrosEspecificos";
 import { generarFormularioRegistro } from "/resources/js/formulario";
+import { cargarComposteras } from "/resources/js/composteras";
 
 let datos = []; // Array para almacenar los datos de la API
 let paginaActual = 1; // Página inicial
@@ -8,6 +9,9 @@ const contenedor = document.querySelector("#Datos");
 const btnAnterior = document.querySelector("#btnAnterior");
 const btnSiguiente = document.querySelector("#btnSiguiente");
 const spanPaginaActual = document.querySelector("#paginaActual");
+const btnComposteras = document.querySelector("#composteras");
+
+btnComposteras.addEventListener("click", cargarComposteras);
 
 boton.addEventListener("click", generarFormularioRegistro);
 
@@ -143,3 +147,6 @@ btnSiguiente.addEventListener("click", () => {
 
 // Cargar los datos iniciales
 cargarDatos(paginaActual);
+
+
+export{cargarDatos,generarTabla};
