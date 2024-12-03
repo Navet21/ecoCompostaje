@@ -9,7 +9,7 @@ use Orion\Http\Controllers\Controller;
 
 class RegistrosController extends Controller
 {
-    use DisableAuthorization;
+    // use DisableAuthorization;
     protected $model = Registro::class; // or "App\Models\Post"
 
     protected function perPage(){

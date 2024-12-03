@@ -11,5 +11,9 @@ class Compostera extends Model
         'tipo',
         'centro_id'
         ];
+
+    public function registros(){
+        return $this->hasMany(Registro::class);
+    } 
 }
 
