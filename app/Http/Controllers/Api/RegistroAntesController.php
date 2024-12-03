@@ -11,7 +11,7 @@ class RegistroAntesController extends RelationController
     /**
      * Fully-qualified model class name
      */
-    use DisableAuthorization;
+    // use DisableAuthorization;
     protected $model = Registro::class; // or "App\Models\Post"
 
     /**

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('url');
             $table->enum('tipo',['aporte','degradacion','maduracion']);
+            $table->boolean('ocupada')->default(0);
             $table->unsignedBigInteger('centro_id');
             $table->foreign('centro_id')->references('id')->on('centros')->onDelete('cascade');
         });
