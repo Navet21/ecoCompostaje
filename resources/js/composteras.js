@@ -30,7 +30,9 @@ function generarComposteras() {
     // Crear y agregar las cards 
     datos.forEach(dato => { 
         const card = document.createElement("div"); 
-        card.className = "bg-white shadow-md rounded-lg p-4 border border-gray-300 w-60"; 
+        card.className = "bg-white shadow-md rounded-lg p-4 border border-gray-300 w-60 flex justify-between items-center";
+
+        const contenido = document.createElement("div");
         const tipo = document.createElement("h2"); 
         tipo.className = "text-xl font-bold mb-2"; 
         tipo.textContent = `Tipo: ${dato.tipo}`; 
@@ -40,6 +42,13 @@ function generarComposteras() {
         centroId.className = "text-gray-700"; 
         centroId.textContent = `Centro ID: ${dato.centro_id}`; 
         card.appendChild(centroId); 
+
+        const boton = document.createElement("button"); 
+        boton.className = "bg-green-500 text-white px-4 py-2 rounded"; 
+        boton.textContent = "Nuevo Registro";
+        boton.addEventListener("click", () => { console.log("Botón clicado en la tarjeta de", dato.tipo); }); card.appendChild(contenido); card.appendChild(boton); fragmento.appendChild(card);
+        card.appendChild(contenido);
+        card.appendChild(boton);
         
         fragmento.appendChild(card); });
 
