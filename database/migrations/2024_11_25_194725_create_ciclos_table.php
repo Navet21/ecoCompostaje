@@ -19,7 +19,9 @@ return new class extends Migration
             $table->unsignedBigInteger('bolo_id');
             $table->boolean('terminado')->default(0);
             $table->foreign('bolo_id')->references('id')->on('bolos')->onDelete('cascade');
-            $table->unsignedBigInteger('compostera_id')->references('id')->on('composteras')->onDelete('cascade');
+            $table->unsignedBigInteger('compostera_id');
+            $table->foreign('compostera_id')->references('id')->on('composteras')->onDelete('cascade');
+            
         });
     }
 
