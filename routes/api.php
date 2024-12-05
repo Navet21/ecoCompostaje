@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AntesController;
+use App\Http\Controllers\Api\CentroComposterasController;
+use App\Http\Controllers\Api\CicloBoloController;
 use App\Http\Controllers\Api\ComposteraRegistrosController;
 use App\Http\Controllers\Api\RegistroAntesController;
 use App\Http\Controllers\Api\RegistroDurantesController;
@@ -11,6 +13,8 @@ use App\Http\Controllers\Api\BoloCiclosController;
 use App\Http\Controllers\Api\CiclosController;
 use App\Http\Controllers\Api\BoloController;
 use App\Http\Controllers\Api\ComposterasController;
+use App\Http\Controllers\Api\CicloComposteraController;
+use App\Http\Controllers\Api\ComposteraCiclosController;
 use Illuminate\Support\Facades\Route;
 use Orion\Facades\Orion;
 use App\Http\Controllers\Api\CentrosController;
@@ -70,6 +74,10 @@ Route::group(['as' => 'api.'], function() {
     Orion::hasManyResource('registros', 'despues', RegistroDespuesController::class);
     Orion::hasManyResource('bolos', 'ciclos', BoloCiclosController::class);
     Orion::hasManyResource('composteras', 'registros', ComposteraRegistrosController::class);
+    Orion::hasManyResource('centros', 'composteras', CentroComposterasController::class);
+    Orion::belongsToResource('ciclos','bolos',CicloBoloController::class);
+    Orion::belongsToResource('ciclo','composteras',CicloComposteraController::class);
+    Orion::hasManyResource('compostera','ciclos',ComposteraCiclosController::class);
 });
 
 //Obtener ultimo registro
@@ -82,4 +90,4 @@ Route::get('bolo/last', [BoloController::class,'ultimoBolo']);
 Route::get('ciclo/last', [CiclosController::class,'ultimoCiclo']);
 
 //Obtener ultimo ciclo del bolo que corresponda
-Route::get('bolo/{boloId}/lastCiclo',[BoloCiclosController::class,'ultimoCiclo']);
+Route::get('compostera/{compostera}/ciclos/ultimo', [ComposteraCiclosController::class, 'ultimoCiclo']);

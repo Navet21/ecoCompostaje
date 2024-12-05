@@ -1,31 +1,17 @@
 import { consultarADD } from "/resources/js/registrosEspecificos";
-import { generarFormularioRegistro } from "/resources/js/formulario";
 import { cargarComposteras } from "/resources/js/composteras";
 
 let datos = []; // Array para almacenar los datos de la API
 let paginaActual = 1; // Página inicial
-const boton = document.querySelector('#nuevoRegistro');
 const contenedor = document.querySelector("#Datos");
 const btnAnterior = document.querySelector("#btnAnterior");
 const btnSiguiente = document.querySelector("#btnSiguiente");
 const spanPaginaActual = document.querySelector("#paginaActual");
 const btnComposteras = document.querySelector("#composteras");
 
-btnComposteras.addEventListener("click", cargarComposteras);
+cargarComposteras();
 
-boton.addEventListener("click", generarFormularioRegistro);
 
-// Función para consultar datos desde la API
-async function consulta(url) {
-    const response = await fetch(url);
-    if (!response.ok) {
-        if (response.status === 404) {
-            return null; // Lugar no encontrado
-        }
-        throw new Error("Error en la consulta de la API.");
-    }
-    return await response.json();
-}
 
 // Función para cargar datos de una página específica
 async function cargarDatos(pagina) {
@@ -45,7 +31,7 @@ async function cargarDatos(pagina) {
         });
 
         // Actualizar la tabla con los nuevos datos
-        generarTabla();
+        // generarTabla();
 
         // Actualizar botones de paginación y número de página
         manejarBotones(registros.meta);

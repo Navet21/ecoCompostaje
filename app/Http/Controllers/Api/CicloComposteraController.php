@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Compostera;
+use App\Models\Ciclo;
 use Orion\Concerns\DisableAuthorization;
 use Orion\Http\Controllers\RelationController;
 
-class ComposteraRegistrosController extends RelationController
+class CicloComposteraController extends RelationController
 {
     /**
      * Fully-qualified model class name
      */
     // use DisableAuthorization;
-    protected $model = Compostera::class; // or "App\Models\Post"
+    protected $model = Ciclo::class; // or "App\Models\Post"
 
     /**
      * Name of the relationship as it is defined on the Post model
      */
-    protected $relation = 'registros';
+    protected $relation = 'compostera';
 }
