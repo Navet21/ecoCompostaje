@@ -134,11 +134,11 @@ export async function generarComposteras(mensajeExito = null) {
             }
             else if(compostera_id == 3){
                 if(estado){
-                    "La compostera ya está ocupada por un bolo, introduce un registro"
+                    alert("La compostera ya está ocupada por un bolo, introduce un registro");
                     generarFormularioAntes(compostera_id);
                 }
                 else{
-                    "La compostera está libre, añadiendo el bolo correspondiente";
+                    alert("La compostera está libre, añadiendo el bolo correspondiente");
                     generarFormularioAntes(compostera_id);
                 }
             }
