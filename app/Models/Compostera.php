@@ -12,11 +12,19 @@ class Compostera extends Model
     protected $fillable = [
         'url',
         'tipo',
-        'centro_id'
-    ];
+
+        'centro_id',
+        'ocupada',
+        ];
+
 
     public function registros()
     {
         return $this->hasMany(Registro::class);
+
+    } 
+    public function ciclos(){
+        return $this->hasMany(Ciclo::class,'compostera_id','id');
+
     }
 }

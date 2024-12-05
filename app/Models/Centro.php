@@ -19,4 +19,8 @@ class Centro extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function composteras(){
+        return $this->hasMany(Compostera::class);
+    }
 }
