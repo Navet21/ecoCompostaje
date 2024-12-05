@@ -25,6 +25,11 @@ class Registro extends Model
         return $this->belongsTo(Compostera::class);
     }
 
+    public function ciclo()
+    {
+        return $this->belongsTo(Ciclo::class);
+    }
+
     public function antes()
     {
         return $this->hasMany(Antes::class);

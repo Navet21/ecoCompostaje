@@ -22,6 +22,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        //eliminar datos y volverlos a crear
+        // DB::table('registros')->delete();
+        // DB::table('antes')->delete();
+        // DB::table('durantes')->delete();
+        // DB::table('despues')->delete();
+        // DB::table('composteras')->delete();
+        // DB::table('bolos')->delete();
+        // DB::table('ciclos')->delete();
+        // DB::table('users')->delete();
+        // DB::table('centros')->delete();
+
 
         // Centro::factory()->create([
         //     'codigo' => 35003630,
@@ -37,17 +48,79 @@ class DatabaseSeeder extends Seeder
         //     'id_centros' => Centro::all()->random()->id
         // ]);
 
+        // Compostera::factory()->create([
+        //     'url' => 'https://wwww.compostera2.es',
+        //     'tipo' => 'maduracion',
+        //     'centro_id' => Centro::all()->random()->id,
+        // ]);
+
+        // Compostera::factory()->create([
+        //     'url' => 'https://wwww.compostera3.es',
+        //     'tipo' => 'degradacion',
+        //     'centro_id' => Centro::all()->random()->id,
+        // ]);
+
+        // Compostera::factory()->create([
+        //     'url' => 'https://wwww.compostera1.es',
+        //     'tipo' => 'aporte',
+        //     'centro_id' => Centro::all()->random()->id,
+        // ]);
 
 
-        // DB::delete('delete from community_links');
-        Compostera::factory(3)->create();
-        Bolo::factory(1)->create();
 
-        // Registro::factory(50)->create();
-        // Antes::factory(50)->create();
-        // Durante::factory(50)->create();
-        // Despues::factory(50)->create();
-        Ciclo::factory(3)->create();
+        // Bolo::factory()->create([
+        //     'nombre' => 'Bolo enero',
+        //     'datos_relevantes' => 'perfecto',
+        //     'terminado' => '1',
+        // ]);
+
+        // Ciclo::factory()->create([
+        //     'fecha_inicio' => '2024-01-05',
+        //     'fecha_fin' => '2024-03-05',
+        //     'terminado' => '1',
+        //     'bolo_id' => Bolo::all()->random()->id,
+        //     'compostera_id' => Compostera::all()->random()->id,
+        // ]);
+
+        //despues de crear los datos anteriores, se crean los registros:
+
+        // Registro::factory()->create([
+        //     'ciclo_id' => Ciclo::all()->random()->id,
+        //     'user_id' => User::all()->random()->id,
+        //     'compostera_id' => Compostera::all()->random()->id,
+        // ]);
+
+        //despues introducimos datos en las tablas:
+
+        // Antes::factory()->create([
+        //     'registro_id' => Registro::all()->random()->id,
+        // ]);
+
+        // Durante::factory()->create([
+        //     'registro_id' => Registro::all()->random()->id,
+        // ]);
+
+        // Despues::factory()->create([
+        //     'registro_id' => Registro::all()->random()->id,
+        // ]);
+
+
+
+
+
+
+
+
+
+        // // DB::delete('delete from community_links');
+        // Compostera::factory(3)->create();
+        // Bolo::factory(1)->create();
+
+        // // Registro::factory(50)->create();
+        // // Antes::factory(50)->create();
+        // // Durante::factory(50)->create();
+        // // Despues::factory(50)->create();
+        // Ciclo::factory(3)->create();
 
         /*
 
