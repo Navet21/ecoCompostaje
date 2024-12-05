@@ -346,7 +346,7 @@ function generarFormularioDespues(compostera_seleccionada) {
         const terminaCiclo = inputs["terminaCiclo"].checked;
         console.log(terminaCiclo);
         console.log(datosFormularioDespues);
-        insertarRegistros(datosFormularioRegistro, datosFormularioAntes, datosFormularioDurante, datosFormularioDespues,compostera_id,terminaCiclo)
+        insertarRegistros(datosBolo,datosFormularioRegistro, datosFormularioAntes, datosFormularioDurante, datosFormularioDespues,compostera_id,terminaCiclo);
     });
 
     botonAtras.addEventListener("click",()=>{
@@ -373,13 +373,25 @@ function obtenerFechaFormatoCorrecto() {
 //Primero tienes que introducir el registro a la tabla
 
 
-async function insertarRegistros(datosFormularioRegistro, datosFormularioAntes, datosFormularioDurante, datosFormularioDespues,id_compostera,terminaCiclo) {
-    
+async function insertarRegistros(datosBolo,datosFormularioRegistro, datosFormularioAntes, datosFormularioDurante, datosFormularioDespues, id_compostera, terminaCiclo) {
     try {
         compostera_id = id_compostera;
+        const cicloTerminado = terminaCiclo;
 
-        if(compostera_id == 1){
+        // Consultar estado actual de la compostera
+        const urlCompostera = `/api/composteras/${compostera_id}`;
+        const compostera = await consulta(urlCompostera);
+        const estadoCompostera = compostera.data.ocupada;
+
+        const obtenerFechaFormatoCorrecto = () => {
+            const fecha = new Date();
+            return fecha.toISOString().split('T')[0]; // Devuelve solo la parte de la fecha (YYYY-MM-DD)
+        };
+
+        if (compostera_id === 1 && !estadoCompostera) {
             if (Object.keys(datosBolo).length > 0) {
+                console.log(datosBolo);
+                // Insertar bolo
                 const urlBolo = '/api/bolos';
                 const responseBolo = await fetch(urlBolo, {
                     method: 'POST',
@@ -389,140 +401,120 @@ async function insertarRegistros(datosFormularioRegistro, datosFormularioAntes, 
                     },
                     body: JSON.stringify(datosBolo),
                 });
-    
+
                 if (!responseBolo.ok) {
                     throw new Error("Error al insertar el Bolo.");
                 }
-    
-                const BoloCreado = await responseBolo.json(); // Cambié a responseBolo
+
+                const BoloCreado = await responseBolo.json();
                 console.log(`Bolo creado con éxito:`, BoloCreado);
-    
-                const urlConsultaBolo = '/api/bolo/last';
-                const ultimobolo = await consulta(urlConsultaBolo);
-                const idBolo = ultimobolo.id;
-                datosCiclo ={
-                    fecha_inicio:obtenerFechaFormatoCorrecto(),
-                    bolo_id: idBolo,
-                    compostera_id : compostera_id,
-                }
-                console.log(datosCiclo);
-    
-                const urlCiclo = '/api/ciclos';
-                const responseCiclo = await fetch(urlCiclo, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(datosCiclo),
-                });
-                if (!responseCiclo.ok) {
-                    throw new Error("Error al insertar el Ciclo");
-                }
-    
-                const CicloCreado = await responseCiclo.json(); //
-                console.log(`Ciclo creado con éxito:`, CicloCreado);
 
-                function obtenerFechaFormatoCorrecto() {
-                    const fecha = new Date();
-                    return fecha.toISOString().split('T')[0]; // Devuelve solo la parte de la fecha (YYYY-MM-DD)
-                }
-                datos ={};
+                datosCiclo = {
+                    fecha_inicio: obtenerFechaFormatoCorrecto(),
+                    bolo_id: BoloCreado.data.id,
+                    compostera_id: compostera_id,
+                };
             }
-        }
-        else if(compostera_id == 2){
-            const urlBolocompostera2 = '/api/bolo/compostera2';
-            const ultimobolo = await consulta(urlBolocompostera2);
-            const idBolo = ultimobolo.id;
 
-            const urlcompostera = `/api/composteras/${compostera_id}`
-            const compostera = await consulta(urlcompostera);
-            const estadoCompostera = compostera.data.ocupada;
-            console.log(estadoCompostera);
-            if(!estadoCompostera){
-                datosCiclo ={
-                    fecha_inicio:obtenerFechaFormatoCorrecto(),
-                    bolo_id: idBolo,
-                    compostera_id : compostera_id,
-                }
-                const urlCiclo = '/api/ciclos';
-                const responseCiclo = await fetch(urlCiclo, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(datosCiclo),
-                });
-                if (!responseCiclo.ok) {
-                    throw new Error("Error al insertar el Ciclo");
-                }
-    
-                const CicloCreado = await responseCiclo.json(); //
-                console.log(`Ciclo creado con éxito:`, CicloCreado);
+            // Insertar ciclo
+            const urlCiclo = '/api/ciclos';
+            const responseCiclo = await fetch(urlCiclo, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(datosCiclo),
+            });
 
-                function obtenerFechaFormatoCorrecto() {
-                    const fecha = new Date();
-                    return fecha.toISOString().split('T')[0]; // Devuelve solo la parte de la fecha (YYYY-MM-DD)
-                }
+            if (!responseCiclo.ok) {
+                throw new Error("Error al insertar el Ciclo");
             }
-        }
-        else if(compostera_id == 3){
-            const urlBolocompostera2 = '/api/bolo/compostera3';
-            const ultimobolo = await consulta(urlBolocompostera2);
-            const idBolo = ultimobolo.id;
 
-            const urlcompostera = `/api/composteras/${compostera_id}`
-            const compostera = await consulta(urlcompostera)
-            const estadoCompostera = compostera.data.ocupada;
-            if(!estadoCompostera){
-                datosCiclo ={
-                    fecha_inicio:obtenerFechaFormatoCorrecto(),
-                    bolo_id: idBolo,
-                    compostera_id : compostera_id,
-                }
-                const urlCiclo = '/api/ciclos';
-                const responseCiclo = await fetch(urlCiclo, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(datosCiclo),
-                });
-                if (!responseCiclo.ok) {
-                    throw new Error("Error al insertar el Ciclo");
-                }
-    
-                const CicloCreado = await responseCiclo.json(); //
-                console.log(`Ciclo creado con éxito:`, CicloCreado);
+            const CicloCreado = await responseCiclo.json();
+            console.log(`Ciclo creado con éxito:`, CicloCreado);
+        } else if (compostera_id === 2 && !estadoCompostera) {
+            console.log("Esta entrando aqui");
+            const urlBoloCompostera2 = '/api/bolo/compostera2';
+            const boloCompostera2 = await consulta(urlBoloCompostera2);
+            console.log(boloCompostera2);
+            const idBolo = boloCompostera2.id;
+            console.log(`El id del bolo es ${idBolo}`);
 
-                function obtenerFechaFormatoCorrecto() {
-                    const fecha = new Date();
-                    return fecha.toISOString().split('T')[0]; // Devuelve solo la parte de la fecha (YYYY-MM-DD)
-                }
+            const datosCiclo = {
+                fecha_inicio: obtenerFechaFormatoCorrecto(),
+                bolo_id: idBolo,
+                compostera_id: compostera_id,
+            };
+
+            const urlCiclo = '/api/ciclos';
+            const responseCiclo = await fetch(urlCiclo, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(datosCiclo),
+            });
+
+            if (!responseCiclo.ok) {
+                throw new Error("Error al insertar el ciclo para compostera 2.");
             }
+
+            const cicloCreado = await responseCiclo.json();
+            console.log("Ciclo creado para compostera 2:", cicloCreado);
+        } else if (compostera_id === 3 && !estadoCompostera) {
+            // Obtener bolo disponible para compostera 3
+            const urlBoloCompostera3 = '/api/bolo/compostera3';
+            const boloCompostera3 = await consulta(urlBoloCompostera3);
+            console.log(boloCompostera3);
+
+            const idBolo = boloCompostera3.id;
+
+            const datosCiclo = {
+                fecha_inicio: obtenerFechaFormatoCorrecto(),
+                bolo_id: idBolo,
+                compostera_id: compostera_id,
+            };
+
+            const urlCiclo = '/api/ciclos';
+            const responseCiclo = await fetch(urlCiclo, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(datosCiclo),
+            });
+
+            if (!responseCiclo.ok) {
+                throw new Error("Error al insertar el ciclo para compostera 3.");
+            }
+
+            const cicloCreado = await responseCiclo.json();
+            console.log("Ciclo creado para compostera 3:", cicloCreado);
         }
-        
-        // Consultar el último ciclo insertado en el bolo
+
+        // Consultar el último ciclo asociado a la compostera
         const urlConsultaCiclo = `/api/compostera/${id_compostera}/ciclos?limit=100`;
         const todosCiclo = await consulta(urlConsultaCiclo);
-        console.log(todosCiclo);
         const ultimoCiclo = todosCiclo.data.sort((a, b) => b.id - a.id)[0];
-        console.log("Último ciclo:", ultimoCiclo);
-        const ultimobolo_id = todosCiclo.data[0].bolo_id;
-        const ultimociclo_id = todosCiclo.data[0].id;
-        datosFormularioRegistro = {
-            ciclo_id : ultimociclo_id,
-            user_id : user_id,
-            compostera_id:compostera_id,
-        }
-        if (!todosCiclo) {
+
+        if (!ultimoCiclo) {
             throw new Error("No se encontró el último Ciclo.");
         }
-        
-        
+
+        const ultimobolo_id = ultimoCiclo.bolo_id;
+        const ultimociclo_id = ultimoCiclo.id;
+
+        datosFormularioRegistro = {
+            ciclo_id: ultimociclo_id,
+            user_id: user_id,
+            compostera_id: compostera_id,
+        };
+
         console.log(datosFormularioRegistro);
+
         // Insertar el registro inicial
         const urlRegistro = '/api/registros';
         const responseRegistro = await fetch(urlRegistro, {
@@ -557,105 +549,103 @@ async function insertarRegistros(datosFormularioRegistro, datosFormularioAntes, 
         datosFormularioDurante.registro_id = registro_id;
         datosFormularioDespues.registro_id = registro_id;
 
-        // Insertar en la tabla "antes"
+        // Insertar datos adicionales en las tablas relacionadas
         await insertarTabla('api/antes', datosFormularioAntes, 'antes');
-
-        // Insertar en la tabla "durantes"
         await insertarTabla('api/durantes', datosFormularioDurante, 'durante');
-
-        // Insertar en la tabla "despues"
         await insertarTabla('api/despues', datosFormularioDespues, 'despues');
 
+        //Logica para cerrar bolos y ciclos
 
+        // Finalizar ciclo y bolo si corresponde
+        if(cicloTerminado){
+            if(id_compostera == 1){
+                const urlConsultaCiclo = `/api/compostera/${id_compostera}/ciclos?limit=100`;
+                const todosCiclo = await consulta(urlConsultaCiclo);
+                const ultimoregistro = todosCiclo.data.filter(ciclo => !ciclo.terminado).sort((a, b) => b.id - a.id)[0];
+                const ultimobolo_id = ultimoregistro.bolo_id;
+                const ultimociclo_id = ultimoregistro.id;
+                console.log("Esta entrando");
+                console.log(ultimobolo_id);
+                console.log(ultimociclo_id);
+                const estado_bolo = {
+                    "ciclo1": true
+                }
+                const estado_ciclo = {
+                    "fecha_fin": obtenerFechaFormatoCorrecto(),
+                    "terminado": 1,
+                }
+                const estado_compostera ={
+                    "ocupada": false
+                }
+                console.log("Estado enviado:", JSON.stringify(estado_bolo));
+                await cerrarBolo(ultimobolo_id,estado_bolo);
+                await cerrarCiclo(ultimociclo_id,estado_ciclo);
+                await actualizarEstadoCompostera(compostera_id, estado_compostera) ;
+            }
+            else if(compostera_id == 2){
+                const urlConsultaCiclo = `/api/compostera/${id_compostera}/ciclos?limit=100`;
+                const todosCiclo = await consulta(urlConsultaCiclo);
+                const ultimoregistro = todosCiclo.data.filter(ciclo => !ciclo.terminado).sort((a, b) => b.id - a.id)[0];
+                const ultimobolo_id = ultimoregistro.bolo_id;
+                const ultimociclo_id = ultimoregistro.id;
+                console.log("Esta entrando");
+                console.log(ultimobolo_id);
+                console.log(ultimociclo_id);
+                const estado_bolo = {
+                    "ciclo2": true
+                }
+                const estado_ciclo = {
+                    "fecha_fin": obtenerFechaFormatoCorrecto(),
+                    "terminado": 1,
+                }
+                const estado_compostera ={
+                    "ocupada": false
+                }
+                console.log("Estado enviado:", JSON.stringify(estado_bolo));
+                await cerrarBolo(ultimobolo_id,estado_bolo);
+                await cerrarCiclo(ultimociclo_id,estado_ciclo);
+                await actualizarEstadoCompostera(compostera_id, estado_compostera) ;
+            }
+            else if(compostera_id == 3){
+                const urlConsultaCiclo = `/api/compostera/${id_compostera}/ciclos?limit=100`;
+                const todosCiclo = await consulta(urlConsultaCiclo);
+                const ultimoregistro = todosCiclo.data.filter(ciclo => !ciclo.terminado).sort((a, b) => b.id - a.id)[0];
+                const ultimobolo_id = ultimoregistro.bolo_id;
+                const ultimociclo_id = ultimoregistro.id;
+                console.log("Esta entrando");
+                console.log(ultimobolo_id);
+                console.log(ultimociclo_id);
+                const estado_bolo = {
+                    "ciclo3": true,
+                    "terminado": true
+                }
+                const estado_ciclo = {
+                    "fecha_fin": obtenerFechaFormatoCorrecto(),
+                    "terminado": 1,
+                }
+                const estado_compostera ={
+                    "ocupada": false
+                }
+                console.log("Estado enviado:", JSON.stringify(estado_bolo));
+                await cerrarBolo(ultimobolo_id,estado_bolo);
+                await cerrarCiclo(ultimociclo_id,estado_ciclo);
+                await actualizarEstadoCompostera(compostera_id, estado_compostera) ;
+            }
+        }
+
+        // Actualizar compostera si estaba libre
+        if (!estadoCompostera) {
+            const estado_compostera = { ocupada: true };
+            await actualizarEstadoCompostera(compostera_id, estado_compostera);
+        }
+
+        cargarComposteras("Has guardado el registro con éxito");
     } catch (error) {
         console.error('Error en el proceso:', error);
     }
-    const estado_compostera ={
-        "ocupada": true,
-    }
-    //Consultamos el estado de la compostera para actualizarla.
-    const urlConsultaEstadoCompostera = `/api/composteras/${compostera_id}`;
-    const estadoCompostera = await consulta(urlConsultaEstadoCompostera);
-    if(terminaCiclo){
-        if(id_compostera == 1){
-            const urlConsultaCiclo = `/api/compostera/${id_compostera}/ciclos?limit=100`;
-            const todosCiclo = await consulta(urlConsultaCiclo);
-            const ultimoregistro = todosCiclo.data.filter(ciclo => !ciclo.terminado).sort((a, b) => b.id - a.id)[0];
-            const ultimobolo_id = ultimoregistro.bolo_id;
-            const ultimociclo_id = ultimoregistro.id;
-            console.log("Esta entrando");
-            console.log(ultimobolo_id);
-            console.log(ultimociclo_id);
-            const estado_bolo = {
-                "ciclo1": true
-            }
-            const estado_ciclo = {
-                "fecha_fin": obtenerFechaFormatoCorrecto(),
-                "terminado": 1,
-            }
-            const estado_compostera ={
-                "ocupada": false
-            }
-            console.log("Estado enviado:", JSON.stringify(estado_bolo));
-            await cerrarBolo(ultimobolo_id,estado_bolo);
-            await cerrarCiclo(ultimociclo_id,estado_ciclo);
-            await actualizarEstadoCompostera(compostera_id, estado_compostera) ;
-        }
-        else if(compostera_id == 2){
-            const urlConsultaCiclo = `/api/compostera/${id_compostera}/ciclos?limit=100`;
-            const todosCiclo = await consulta(urlConsultaCiclo);
-            const ultimoregistro = todosCiclo.data.filter(ciclo => !ciclo.terminado).sort((a, b) => b.id - a.id)[0];
-            const ultimobolo_id = ultimoregistro.bolo_id;
-            const ultimociclo_id = ultimoregistro.id;
-            console.log("Esta entrando");
-            console.log(ultimobolo_id);
-            console.log(ultimociclo_id);
-            const estado_bolo = {
-                "ciclo2": true
-            }
-            const estado_ciclo = {
-                "fecha_fin": obtenerFechaFormatoCorrecto(),
-                "terminado": 1,
-            }
-            const estado_compostera ={
-                "ocupada": false
-            }
-            console.log("Estado enviado:", JSON.stringify(estado_bolo));
-            await cerrarBolo(ultimobolo_id,estado_bolo);
-            await cerrarCiclo(ultimociclo_id,estado_ciclo);
-            await actualizarEstadoCompostera(compostera_id, estado_compostera) ;
-        }
-        else if(compostera_id == 3){
-            const urlConsultaCiclo = `/api/compostera/${id_compostera}/ciclos?limit=100`;
-            const todosCiclo = await consulta(urlConsultaCiclo);
-            const ultimoregistro = todosCiclo.data.filter(ciclo => !ciclo.terminado).sort((a, b) => b.id - a.id)[0];
-            const ultimobolo_id = ultimoregistro.bolo_id;
-            const ultimociclo_id = ultimoregistro.id;
-            console.log("Esta entrando");
-            console.log(ultimobolo_id);
-            console.log(ultimociclo_id);
-            const estado_bolo = {
-                "ciclo3": true,
-                "terminado": true
-            }
-            const estado_ciclo = {
-                "fecha_fin": obtenerFechaFormatoCorrecto(),
-                "terminado": 1,
-            }
-            const estado_compostera ={
-                "ocupada": false
-            }
-            console.log("Estado enviado:", JSON.stringify(estado_bolo));
-            await cerrarBolo(ultimobolo_id,estado_bolo);
-            await cerrarCiclo(ultimociclo_id,estado_ciclo);
-            await actualizarEstadoCompostera(compostera_id, estado_compostera) ;
-        }
-    }
-    if(!estadoCompostera.data.ocupada){
-        await actualizarEstadoCompostera(compostera_id, estado_compostera) ;
-    }
-    cargarComposteras("Has guardado el registro con éxito");
 }
+
+
 
 // Función auxiliar para insertar en una tabla
 async function insertarTabla(url, datos, nombreTabla) {
