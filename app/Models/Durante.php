@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Durante extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'registro_id',
         'riego',
@@ -14,11 +17,12 @@ class Durante extends Model
         'tipo_aporte_verde',
         'aporte_seco',
         'tipo_aporte_seco',
-        'foto',
+        // 'foto',
         'observacion'
-        ];
+    ];
 
-    public function registro(){
-        return $this->belongsTo(Registro::class,'registro_id');
+    public function registro()
+    {
+        return $this->belongsTo(Registro::class, 'registro_id');
     }
 }

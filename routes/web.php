@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AnalisisController;
 
 
 Route::get('/', function () {
@@ -16,5 +17,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('users', UserController::class)->middleware('can:administrate,App\Models\User');
+
+Route::get('/analisis', [AnalisisController::class, 'index']);
 
 require __DIR__ . '/auth.php';
