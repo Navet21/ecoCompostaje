@@ -1,5 +1,6 @@
 <?php
 
+
 namespace Database\Seeders;
 
 use App\Models\Centro;
@@ -11,7 +12,6 @@ use App\Models\Compostera;
 use App\Models\Bolo;
 use App\Models\Ciclo;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -22,262 +22,172 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //eliminar datos y volverlos a crear
-        // DB::table('registros')->delete();
-        // DB::table('antes')->delete();
-        // DB::table('durantes')->delete();
-        // DB::table('despues')->delete();
-        // DB::table('composteras')->delete();
-        // DB::table('bolos')->delete();
-        // DB::table('ciclos')->delete();
-        // DB::table('users')->delete();
-        // DB::table('centros')->delete();
-
-
-        // Centro::factory()->create([
-        //     'codigo' => 35003630,
-        //     'nombre' => 'San Diego De Alacala',
-        //     'direccion' => 'Primero de Mayo',
-        // ]);
-
-        // User::factory()->create([
-        //     'name' => 'M',
-        //     'email' => 'm@m.es',
-        //     'password' => bcrypt('1'),
-        //     'admin' => 1,
-        //     'id_centros' => Centro::all()->random()->id
-        // ]);
-
-        // Compostera::factory()->create([
-        //     'url' => 'https://wwww.compostera2.es',
-        //     'tipo' => 'maduracion',
-        //     'centro_id' => Centro::all()->random()->id,
-        // ]);
-
-        // Compostera::factory()->create([
-        //     'url' => 'https://wwww.compostera3.es',
-        //     'tipo' => 'degradacion',
-        //     'centro_id' => Centro::all()->random()->id,
-        // ]);
-
-        // Compostera::factory()->create([
-        //     'url' => 'https://wwww.compostera1.es',
-        //     'tipo' => 'aporte',
-        //     'centro_id' => Centro::all()->random()->id,
-        // ]);
+        // Vaciar tablas (en orden para evitar problemas de FK)
+        DB::table('antes')->delete();
+        DB::table('durantes')->delete();
+        DB::table('despues')->delete();
+        DB::table('registros')->delete();
+        DB::table('ciclos')->delete();
+        DB::table('bolos')->delete();
+        DB::table('composteras')->delete();
+        DB::table('users')->delete();
+        DB::table('centros')->delete();
 
 
 
-        // Bolo::factory()->create([
-        //     'nombre' => 'Bolo enero',
-        //     'datos_relevantes' => 'perfecto',
-        //     'terminado' => '1',
-        // ]);
-
-        // Ciclo::factory()->create([
-        //     'fecha_inicio' => '2024-01-05',
-        //     'fecha_fin' => '2024-03-05',
-        //     'terminado' => '1',
-        //     'bolo_id' => Bolo::all()->random()->id,
-        //     'compostera_id' => Compostera::all()->random()->id,
-        // ]);
-
-        //despues de crear los datos anteriores, se crean los registros:
-
-        // Registro::factory()->create([
-        //     'ciclo_id' => Ciclo::all()->random()->id,
-        //     'user_id' => User::all()->random()->id,
-        //     'compostera_id' => Compostera::all()->random()->id,
-        // ]);
-
-        //despues introducimos datos en las tablas:
-
-        // Antes::factory()->create([
-        //     'registro_id' => Registro::all()->random()->id,
-        // ]);
-
-        // Durante::factory()->create([
-        //     'registro_id' => Registro::all()->random()->id,
-        // ]);
-
-        // Despues::factory()->create([
-        //     'registro_id' => Registro::all()->random()->id,
-        // ]);
-
-
-
-
-
-
-
-
-
-        // // DB::delete('delete from community_links');
-        // Compostera::factory(3)->create();
-        // Bolo::factory(1)->create();
-
-        // // Registro::factory(50)->create();
-        // // Antes::factory(50)->create();
-        // // Durante::factory(50)->create();
-        // // Despues::factory(50)->create();
-        // Ciclo::factory(3)->create();
-
-        /*
-
-
-        $composterasCodigos = ['aporte', 'degradacion', 'maduracion'];
-        $primerCentro = Centro::factory()->create([
+        // Crear un centro
+        $centro = Centro::factory()->create([
             'codigo' => 35003630,
             'nombre' => 'San Diego De Alacala',
             'direccion' => 'Primero de Mayo',
         ]);
 
-        // User::factory(10)->create();
-
-        User::factory()->create([
+        // Crear un usuario administrador asociado al centro
+        $adminUser = User::factory()->create([
             'name' => 'M',
             'email' => 'm@m.es',
             'password' => bcrypt('1'),
             'admin' => 1,
-            //'centros_id' => $primerCentro->id
+            'id_centros' => $centro->id,
         ]);
 
-        $centros = Centro::factory()->count(3)->create();
+        // Crear 3 composteras asociadas al centro
+        $composteras = Compostera::factory()->count(3)->state(new \Illuminate\Database\Eloquent\Factories\Sequence(
+            ['url' => 'https://www.compostera1.es', 'tipo' => 'aporte'],
+            ['url' => 'https://www.compostera2.es', 'tipo' => 'maduracion'],
+            ['url' => 'https://www.compostera3.es', 'tipo' => 'degradacion']
+        ))->create([
+            'centro_id' => $centro->id,
+        ]);
 
-        // foreach ($centros as $centro) {
-        //     $users = User::factory()->count(4)->create([
-        //         'centros_id' => $centro->id
-        //     ]);
+        // Crear un bolo
+        $bolo = Bolo::factory()->create([
+            'nombre' => 'Bolo enero',
+            'datos_relevantes' => 'perfecto',
+            'terminado' => 1,
+            'ciclo1' => 1,
+            'ciclo2' => 1,
+            'ciclo3' => 1,
+        ]);
+        // Crear bolos adicionales
+        $bolo1 = Bolo::factory()->create([
+            'nombre' => 'Bolo febrero',
+            'datos_relevantes' => 'En proceso',
+            'terminado' => 0,
+            'ciclo1' => 1,
+            'ciclo2' => 1,
+            'ciclo3' => 0,
+        ]);
 
-        $composteras = [];
+        $bolo2 = Bolo::factory()->create([
+            'nombre' => 'Bolo marzo',
+            'datos_relevantes' => 'Listo para uso',
+            'terminado' => 1,
+            'ciclo1' => 1,
+            'ciclo2' => 1,
+            'ciclo3' => 1,
+        ]);
 
-        foreach (['aporte', 'degradacion', 'maduracion'] as $tipo) {
-            $composteras[] = Compostera::factory()->create([
-                'tipo' => $tipo,
-                'centros_id' => $centro->id
-            ]);
-        };
+        $bolo3 = Bolo::factory()->create([
+            'nombre' => 'Bolo abril',
+            'datos_relevantes' => 'Compostaje avanzado',
+            'terminado' => 0,
+            'ciclo1' => 1,
+            'ciclo2' => 0,
+            'ciclo3' => 0,
+        ]);
 
-        $bolos = Bolo::factory()->count(4)->create(['terminado' => 1]);
-        // $bolos = Bolo::factory()->count(4)->create(['ciclo1'=>1]);
-        // $bolos = Bolo::factory()->count(4)->create(['ciclo2'=>1]);
-        // $bolos = Bolo::factory()->count(4)->create(['ciclo3'=>1]);
+        // Crear un ciclo asociado al bolo y a una compostera
+        $ciclo = Ciclo::factory()->create([
+            'fecha_inicio' => '2024-01-05',
+            'fecha_fin' => '2024-03-05',
+            'terminado' => 1,
+            'bolo_id' => $bolo->id,
+            'compostera_id' => $composteras->random()->id,
+        ]);
 
+        // Crear ciclos adicionales
+        $ciclo1 = Ciclo::factory()->create([
+            'fecha_inicio' => '2024-02-01',
+            'fecha_fin' => '2024-04-01',
+            'terminado' => 1,
+            'bolo_id' => $bolo1->id, // Asignado al bolo de febrero
+            'compostera_id' => $composteras->random()->id,
+        ]);
 
-        // BOLOS TERMINADOS
-        foreach ($bolos->take(3) as $indice => $bolo) {
+        $ciclo2 = Ciclo::factory()->create([
+            'fecha_inicio' => '2024-03-01',
+            'fecha_fin' => '2024-05-01',
+            'terminado' => 0,
+            'bolo_id' => $bolo2->id, // Asignado al bolo de marzo
+            'compostera_id' => $composteras->random()->id,
+        ]);
 
-            $ciclos = Ciclo::factory(3)->create([
-                'bolos_id' => $bolo->id,
-                'composteras_id' => $composteras[$indice]->id
-            ]);
-
-
-
-            foreach ($ciclos as $ciclo) {
-                $registros = Registro::factory(3)->create([
-                    'ciclos_id' => $ciclo->id,
-                    'users_id' => $users->random()->id,
-                    'composteras_id' =>  $composteras[$indice]->id
-                ]);
-
-                foreach ($registros as $registro) {
-                    Antes::factory()->create([
-                        'registros_id' => $registro->id,
-                    ]);
-
-                    Durante::factory()->create([
-                        'registros_id' => $registro->id,
-                    ]);
-
-                    Despues::factory()->create([
-                        'registros_id' => $registro->id,
-                    ]);
-                }
-            }
-        }
-        function crearCompostera($fecha, $ciclos)
-        {
-
-            $bolo = Bolo::factory()->create([
-                'fecha_inicio' => $fecha,
-                'fecha_fin' => null,
-                'terminado' => 0
-            ]);
+        $ciclo3 = Ciclo::factory()->create([
+            'fecha_inicio' => '2024-04-01',
+            'fecha_fin' => '2024-06-01',
+            'terminado' => 0,
+            'bolo_id' => $bolo3->id, // Asignado al bolo de abril
+            'compostera_id' => $composteras->random()->id,
+        ]);
 
 
-            $fechaInicioCiclo = $fecha;
+        // Crear un registro asociado al ciclo, usuario y compostera
+        $registro = Registro::factory()->create([
+            'ciclo_id' => $ciclo->id,
+            'user_id' => $adminUser->id,
+            'compostera_id' => $composteras->random()->id,
+        ]);
 
-            $primerCiclo = true;
+        // Crear datos "Antes"
+        Antes::factory()->create([
+            'registro_id' => $registro->id,
+            'temperaturaAmbiental' => fake()->numberBetween(10, 40),
+            'temperaturaCompostera' => fake()->numberBetween(10, 70),
+            'nivelLlenadoInicial' => fake()->randomElement([
+                '0',
+                '12,5',
+                '25',
+                '37.5',
+                '50',
+                '67.5',
+                '75',
+                '87.5',
+                '100'
+            ]),
+            'olor' => fake()->randomElement(['Podrido', 'Sin olor', 'Amoniaco']),
+            'insectos' => fake()->randomElement(['Si', 'No']),
+            'humedad' => fake()->randomElement(['Exceso', 'Buena', 'Defecto']),
+            'observacion' => fake()->text(200),
+        ]);
 
+        // Crear datos "Durante"
+        Durante::factory()->create([
+            'registro_id' => $registro->id,
+            'riego' => fake()->randomElement(['si', 'no']),
+            'revolver' => fake()->randomElement(['si', 'no']),
+            'aporte_verde' => fake()->numberBetween(0, 127),
+            'tipo_aporte_verde' => fake()->text(50),
+            'aporte_seco' => fake()->numberBetween(0, 127),
+            'tipo_aporte_seco' => fake()->text(50),
+            'observacion' => fake()->text(200),
+        ]);
 
-            for ($i = 0; $i < $ciclos; $i++) {
-                $fechaFinDeciclo;
-                $fechaFinDeciclo = $i + 1 == $ciclos ? null : date('Y-m-d', strtotime($fechaInicioCiclo . ' + 30 days'));
-                $iniciodeCiclo;
-
-                $tipo;
-                if ($i == 0) {
-                    $tipo = '11';
-                } else if ($i == 1) {
-                    $tipo = '22';
-                } else if ($i == 2) {
-                    $tipo = '33';
-                }
-
-                $ciclo = Ciclo::factory()->create([
-                    'bolos_id' => $bolo->id,
-                    'composteras_id' => Compostera::where('tipo', $tipo)->first()->id,
-                    'fecha_inicio' => $fechaInicioCiclo,
-                    'fecha_fin' => $fechaFinDeciclo,
-                    'terminado' => 1
-                ]);
-
-                if ($i == $ciclos - 1) {
-                    $ciclo->terminado = 0;
-                    $ciclo->save();
-                }
-
-                $registros = Registro::factory(3)->create([
-                    'ciclos_id' => $ciclo->id,
-                    'users_id' => User::all()->random()->id,
-                    'composteras_id' => Compostera::where('tipo', $tipo)->first()->id,
-                    'fecha_hora' => $fechaInicioCiclo,
-                ]);
-
-                $fechasRegistros = [$fechaInicioCiclo, date('Y-m-d', strtotime($fechaInicioCiclo . ' + 15 days')), date('Y-m-d', strtotime($fechaInicioCiclo . ' + 30 days'))];
-
-                foreach ($registros as $indice => $registro) {
-                    $registro->fecha_hora = $fechasRegistros[$indice];
-                    $registro->inicio_ciclo = 0;
-                    $registro->save();
-                };
-                if ($i == 0) {
-                    $registros[0]->inicio_ciclo = 1;
-                }
-
-                foreach ($registros as $indice => $registro) {
-                    Antes::factory()->create([
-                        'registros_id' => $registro->id,
-                    ]);
-
-                    Durante::factory()->create([
-                        'registros_id' => $registro->id,
-                    ]);
-
-                    Despues::factory()->create([
-                        'registros_id' => $registro->id,
-                    ]);
-                }
-                $fechaInicioCiclo = $fechaFinDeciclo;
-            }
-        }
-
-        crearCompostera('2023-01-01', 3);
-        crearCompostera('2023-02-01', 2);
-        crearCompostera('2023-03-01', 1);
-    }
-
-    */
+        // Crear datos "Después"
+        Despues::factory()->create([
+            'registro_id' => $registro->id,
+            'nivelLlenadoFinal' => fake()->randomElement([
+                '0',
+                '12,5',
+                '25',
+                '37.5',
+                '50',
+                '67.5',
+                '75',
+                '87.5',
+                '100'
+            ]),
+            'observacion' => fake()->text(200),
+        ]);
     }
 }

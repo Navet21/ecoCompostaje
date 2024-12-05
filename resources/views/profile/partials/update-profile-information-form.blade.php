@@ -13,7 +13,10 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+
+    <form method="post" action="{{ route('profile.update') }}" id="updateImage" enctype="multipart/form-data"
+        class="mt-6 space-y-6">
+
         @csrf
         @method('patch')
 
@@ -49,6 +52,14 @@
                 </div>
             @endif
         </div>
+
+
+        <div>
+            <x-input-label for="image" :value="__('Foto de perfil')" />
+            <x-text-input id="image" name="image" type="file" class="mt-1 block w-full" />
+            <x-input-error class="mt-2" :messages="$errors->get('image')" />
+        </div>
+
 
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Guardar') }}</x-primary-button>
