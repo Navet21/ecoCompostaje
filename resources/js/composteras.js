@@ -33,9 +33,33 @@ async function consulta(url) {
 }
 
 // Función para cargar datos de una página específica
-export function generarComposteras() {
+export function generarComposteras(mensajeExito = null) {
     // Limpiar el contenedor
     contenedor.innerHTML = "";
+
+    // Si se pasa el mensaje de éxito, mostrar el alert al principio
+    if (mensajeExito) {
+        const alerta = document.createElement("div");
+        alerta.className =
+            "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4";
+        alerta.setAttribute("role", "alert");
+
+        const texto = document.createElement("span");
+        texto.className = "block sm:inline";
+        texto.textContent = mensajeExito;
+
+        const botonCerrar = document.createElement("button");
+        botonCerrar.className =
+            "absolute top-0 bottom-0 right-0 px-4 py-3 text-green-700";
+        botonCerrar.innerHTML = "&times;"; // Símbolo de cerrar
+        botonCerrar.addEventListener("click", () => {
+            alerta.remove(); // Eliminar la alerta al hacer clic
+        });
+
+        alerta.appendChild(texto);
+        alerta.appendChild(botonCerrar);
+        contenedor.appendChild(alerta); // Agregar la alerta al contenedor
+    }
 
     // Crear un fragmento para construir la tabla
     const fragmento = document.createDocumentFragment();
@@ -77,7 +101,6 @@ export function generarComposteras() {
         boton.className = "bg-green-500 text-white px-4 py-2 rounded";
         boton.textContent = "Nuevo Registro";
         boton.addEventListener("click", () => {
-            // verEstadoComposteras(compostera_id);
             if (estado) {
                 alert(
                     "La compostera ya está ocupada por un bolo, introduce un registro"
@@ -85,11 +108,10 @@ export function generarComposteras() {
                 generarFormularioAntes(compostera_id);
             } else {
                 alert(
-                    "La compostera está libre,tienes que crear un bolo y un ciclo para poder introducir un registro"
+                    "La compostera está libre, tienes que crear un bolo y un ciclo para poder introducir un registro"
                 );
                 if (compostera_id == 1) {
                     generarFormularioBolo(compostera_id);
-
                 } else {
                     generarFormularioAntes(compostera_id);
                 }
@@ -107,7 +129,8 @@ export function generarComposteras() {
     contenedor.appendChild(fragmento);
 }
 
-async function cargarComposteras() {
+
+export async function cargarComposteras(mensajeExito = null) {
     try {
         const url = `/api/composteras`;
         const registros = await consulta(url, {
@@ -128,7 +151,13 @@ async function cargarComposteras() {
             });
         });
         // Actualizar la tabla con los nuevos datos
-        generarComposteras();
+        if(mensajeExito){
+            generarComposteras(mensajeExito);
+        }
+        else {
+            generarComposteras();
+        }
+        
     } catch (error) {
         console.error("Error al cargar datos:", error.message);
     }
@@ -157,4 +186,3 @@ async function cargarComposteras() {
 //     }
 // }
 
-export { cargarComposteras };
