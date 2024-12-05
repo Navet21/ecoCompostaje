@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Users') }}
+            {{ __('Usuarios') }}
         </h2>
     </x-slot>
 
@@ -48,9 +48,10 @@
                             <!-- Botón de aplicar filtros -->
                             <div class="flex items-center justify-center sm:justify-start">
                                 <button type="submit"
-                                    class="block rounded-md bg-green-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                                    class="block rounded-md border border-green-500 bg-white px-3 py-2 text-center text-sm font-semibold text-green-500 shadow-sm hover:bg-green-400 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
                                     {{ __('Aplicar filtros') }}
                                 </button>
+
                             </div>
                         </div>
                     </form>
@@ -99,14 +100,26 @@
                                                     <form action="{{ route('users.destroy', $user->id) }}"
                                                         method="POST">
                                                         <a href="{{ route('users.show', $user->id) }}"
-                                                            class="text-gray-600 font-bold hover:text-gray-900 mr-2">{{ __('Ver') }}</a>
+                                                            class="inline-block rounded-md border border-green-500 bg-white px-3 py-1 text-sm font-semibold text-green-500 shadow-sm hover:bg-green-400 hover:text-white mr-2">
+                                                            {{ __('Ver') }}
+                                                        </a>
                                                         <a href="{{ route('users.edit', $user->id) }}"
-                                                            class="text-indigo-600 font-bold hover:text-indigo-900  mr-2">{{ __('Editar') }}</a>
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <a href="{{ route('users.destroy', $user->id) }}"
-                                                            class="text-red-600 font-bold hover:text-red-900"
-                                                            onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;">{{ __('Eliminar') }}</a>
+                                                            class="inline-block rounded-md border border-blue-500 bg-white px-3 py-1 text-sm font-semibold text-blue-500 shadow-sm hover:bg-blue-500 hover:text-white mr-2">
+                                                            {{ __('Editar') }}
+                                                        </a>
+
+                                                        <form method="POST"
+                                                            action="{{ route('users.destroy', $user->id) }}"
+                                                            class="inline-block">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="rounded-md border border-red-500 bg-white px-3 py-1 text-sm font-semibold text-red-500 shadow-sm hover:bg-red-500 hover:text-white"
+                                                                onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">
+                                                                {{ __('Eliminar') }}
+                                                            </button>
+                                                        </form>
+
                                                     </form>
                                                 </td>
                                             </tr>

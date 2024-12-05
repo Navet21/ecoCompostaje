@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AnalisisController;
 
 
 Route::get('/', function () {
@@ -15,6 +16,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('users', UserController::class);
+Route::resource('users', UserController::class)->middleware('can:administrate,App\Models\User');
 
-require __DIR__.'/auth.php';
+Route::get('/analisis', [AnalisisController::class, 'index']);
+
+require __DIR__ . '/auth.php';

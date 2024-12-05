@@ -1,212 +1,113 @@
+import {cargarComposteras,generarComposteras} from "/resources/js/composteras";
 
-
-const boton = document.querySelector('#nuevoRegistro');
-let user_id = document.querySelector('#user_id').value;
-let nombreBolo;
+const token = sessionStorage.getItem("token");
+const paginacion = document.querySelector('#paginacion');
 let datosBolo ={};
 let datosCiclo ={};
 let datosFormularioRegistro = {}; // Objeto para almacenar los datos del primer formulario
 let datosFormularioAntes = {};
 let datosFormularioDespues = {};
 let datosFormularioDurante = {};
+let compostera_id ;
+const contenedor = document.querySelector("#Datos");
+const user_id = sessionStorage.getItem('idUsuario');
 
-function generarFormularioRegistro() {
-    // Ocultar el botón inicial
-    boton.classList.add("hidden");
-
-    // Seleccionar el contenedor donde estará el formulario
-    const contenedor = document.querySelector("#Datos");
-    contenedor.innerHTML = ""; // Limpiar contenido previo
-
-    // Crear el formulario
-    const formulario = document.createElement("form");
-    formulario.classList.add("bg-white", "shadow-md", "rounded", "px-8", "pt-6", "pb-8", "mb-4");
-
-    // Crear el campo para elegir una compostera
-    const labelCompostera = document.createElement("label");
-    labelCompostera.textContent = "Elegir una compostera:";
-    labelCompostera.classList.add("block", "text-gray-700", "text-sm", "font-bold", "mb-2");
-    formulario.appendChild(labelCompostera);
-
-    const selectCompostera = document.createElement("select");
-    selectCompostera.classList.add("shadow", "appearance-none", "border", "rounded", "w-full", "py-2", "px-3", "text-gray-700", "leading-tight", "focus:outline-none", "focus:shadow-outline");
-    const opcionesCompostera = ["Compostera 1", "Compostera 2", "Compostera 3"];
-    opcionesCompostera.forEach(opcionTexto => {
-        const opcion = document.createElement("option");
-        opcion.value = opcionTexto;
-        opcion.textContent = opcionTexto;
-        selectCompostera.appendChild(opcion);
-    });
-    formulario.appendChild(selectCompostera);
-    formulario.appendChild(document.createElement("br"));
-
-    // Establecer Compostera 1 como seleccionada por defecto
-    selectCompostera.value = "Compostera 1";
-
-    // Crear contenedor dinámico para bolos
-    const contenedorBolo = document.createElement("div");
-    formulario.appendChild(contenedorBolo);
-
-    // Crear el campo para marcar "Iniciar ciclo"
-    const labelCiclo = document.createElement("label");
-    labelCiclo.textContent = "Iniciar ciclo:";
-    labelCiclo.classList.add("block", "text-gray-700", "text-sm", "font-bold", "mb-2");
-    formulario.appendChild(labelCiclo);
-
-    const checkboxCiclo = document.createElement("input");
-    checkboxCiclo.type = "checkbox";
-    checkboxCiclo.classList.add("mr-2"); // Espaciado ajustado
-    formulario.appendChild(checkboxCiclo);
-
-    const textoCiclo = document.createElement("span");
-    textoCiclo.textContent = "Marcar si desea iniciar un ciclo";
-    textoCiclo.classList.add("text-gray-700", "text-sm", "align-middle");
-    formulario.appendChild(textoCiclo);
-
-    formulario.appendChild(document.createElement("br"));
-
-    // Función para actualizar el formulario según la compostera seleccionada
-    function actualizarFormulario() {
-        contenedorBolo.innerHTML = ""; // Limpiar contenido previo
-
-        if (selectCompostera.value === "Compostera 1") {
-            // Mostrar opciones para iniciar un bolo
-            const labelBolo = document.createElement("label");
-            labelBolo.textContent = "¿Iniciar un bolo?";
-            labelBolo.classList.add("block", "text-gray-700", "text-sm", "font-bold", "mb-2");
-            contenedorBolo.appendChild(labelBolo);
-
-            const selectBolo = document.createElement("select");
-            selectBolo.classList.add("shadow", "appearance-none", "border", "rounded", "w-full", "py-2", "px-3", "text-gray-700", "leading-tight", "focus:outline-none", "focus:shadow-outline");
-            const opcionesBolo = ["", "Sí", "No"];
-            opcionesBolo.forEach(opcionTexto => {
-                const opcion = document.createElement("option");
-                opcion.value = opcionTexto;
-                opcion.textContent = opcionTexto === "" ? "Seleccione una opción" : opcionTexto;
-                selectBolo.appendChild(opcion);
-            });
-            contenedorBolo.appendChild(selectBolo);
-
-            // Mostrar campos adicionales según la selección del bolo
-            selectBolo.addEventListener("change", () => {
-                contenedorBolo.innerHTML = ""; // Limpiar contenido previo
-                contenedorBolo.appendChild(labelBolo);
-                contenedorBolo.appendChild(selectBolo);
-
-                if (selectBolo.value === "Sí") {
-                    const labelNombreBolo = document.createElement("label");
-                    labelNombreBolo.textContent = "Nombre del bolo:";
-                    labelNombreBolo.classList.add("block", "text-gray-700", "text-sm", "font-bold", "mb-2");
-                    contenedorBolo.appendChild(labelNombreBolo);
-
-                    const inputNombreBolo = document.createElement("input");
-                    inputNombreBolo.type = "text";
-                    inputNombreBolo.placeholder = "Nombre del bolo";
-                    inputNombreBolo.classList.add("shadow", "appearance-none", "border", "rounded", "w-full", "py-2", "px-3", "text-gray-700", "leading-tight", "focus:outline-none", "focus:shadow-outline");
-                    contenedorBolo.appendChild(inputNombreBolo);
-
-                    const labelDescripcionBolo = document.createElement("label");
-                    labelDescripcionBolo.textContent = "Descripción del bolo:";
-                    labelDescripcionBolo.classList.add("block", "text-gray-700", "text-sm", "font-bold", "mb-2");
-                    contenedorBolo.appendChild(labelDescripcionBolo);
-
-                    const inputDescripcionBolo = document.createElement("textarea");
-                    inputDescripcionBolo.placeholder = "Descripción del bolo";
-                    inputDescripcionBolo.classList.add("shadow", "appearance-none", "border", "rounded", "w-full", "py-2", "px-3", "text-gray-700", "leading-tight", "focus:outline-none", "focus:shadow-outline");
-                    contenedorBolo.appendChild(inputDescripcionBolo);
-                } else if (selectBolo.value === "No") {
-                    const labelPerteneceBolo = document.createElement("label");
-                    labelPerteneceBolo.textContent = "¿A qué bolo pertenece?";
-                    labelPerteneceBolo.classList.add("block", "text-gray-700", "text-sm", "font-bold", "mb-2");
-                    contenedorBolo.appendChild(labelPerteneceBolo);
-
-                    const inputPerteneceBolo = document.createElement("input");
-                    inputPerteneceBolo.type = "text";
-                    inputPerteneceBolo.placeholder = "Nombre del bolo";
-                    inputPerteneceBolo.classList.add("shadow", "appearance-none", "border", "rounded", "w-full", "py-2", "px-3", "text-gray-700", "leading-tight", "focus:outline-none", "focus:shadow-outline");
-                    contenedorBolo.appendChild(inputPerteneceBolo);
-                }
-            });
-        } else if (selectCompostera.value === "Compostera 3") {
-            // Mostrar opción para finalizar un bolo
-            const labelFinalizarBolo = document.createElement("label");
-            labelFinalizarBolo.textContent = "¿Finalizar bolo?";
-            labelFinalizarBolo.classList.add("block", "text-gray-700", "text-sm", "font-bold", "mb-2");
-            contenedorBolo.appendChild(labelFinalizarBolo);
-
-            const selectFinalizarBolo = document.createElement("select");
-            selectFinalizarBolo.classList.add("shadow", "appearance-none", "border", "rounded", "w-full", "py-2", "px-3", "text-gray-700", "leading-tight", "focus:outline-none", "focus:shadow-outline");
-            const opcionesFinalizarBolo = ["", "Sí", "No"];
-            opcionesFinalizarBolo.forEach(opcionTexto => {
-                const opcion = document.createElement("option");
-                opcion.value = opcionTexto;
-                opcion.textContent = opcionTexto === "" ? "Seleccione una opción" : opcionTexto;
-                selectFinalizarBolo.appendChild(opcion);
-            });
-            contenedorBolo.appendChild(selectFinalizarBolo);
-        }
-    }
-
-    // Escuchar cambios en la compostera seleccionada
-    selectCompostera.addEventListener("change", actualizarFormulario);
-
-    // Crear el botón para pasar al siguiente formulario
-    const botonSiguiente = document.createElement("button");
-    botonSiguiente.type = "button";
-    botonSiguiente.textContent = "Siguiente";
-    botonSiguiente.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
-
-    botonSiguiente.addEventListener("click", function() {
-        let compostera_id;
-        if (selectCompostera.value === "Compostera 1") {
-            compostera_id = 1;
-        } else if (selectCompostera.value === "Compostera 2") {
-            compostera_id = 2;
-        } else if (selectCompostera.value === "Compostera 3") {
-            compostera_id = 3;
-        }
-
-        datosFormularioRegistro = {
-            ciclo_id: checkboxCiclo.checked ? null : 1, // Ciclo iniciado o no
-            user_id: parseInt(user_id), // Asegúrate de que user_id está definido previamente
-            compostera_id: compostera_id,
-        };
-        console.log(datosFormularioRegistro);
-
-        if (document.querySelector("textarea[placeholder='Descripción del bolo']")){
-            datosBolo = { 
-                nombre: document.querySelector("input[placeholder='Nombre del bolo']").value, datos_relevantes: document.querySelector("textarea[placeholder='Descripción del bolo']").value 
-            };
-            nombreBolo = document.querySelector("input[placeholder='Nombre del bolo']").value;
-            console.log(datosBolo); 
-            console.log(nombreBolo);
-        } else{
-            nombreBolo = document.querySelector("input[placeholder='Nombre del bolo']").value; console.log("Nombre del bolo:", nombreBolo); }
-        console.log(datosBolo);
+export function generarFormularioBolo(compostera_seleccionada){
+    compostera_id = compostera_seleccionada;
+    if (compostera_id == 1) {
         
-        // Código para redirigir o procesar siguiente formulario
-        generarFormularioAntes();
-    });
+        console.log(compostera_id);
+        contenedor.innerHTML = "";
+        const labelNombreBolo = document.createElement("label");
+        labelNombreBolo.textContent = "Nombre del bolo:";
+        labelNombreBolo.classList.add(
+            "block",
+            "text-gray-700",
+            "text-sm",
+            "font-bold",
+            "mb-2"
+        );
+        contenedor.appendChild(labelNombreBolo);
 
-    formulario.appendChild(botonSiguiente);
-    contenedor.appendChild(formulario);
+        const inputNombreBolo = document.createElement("input");
+        inputNombreBolo.type = "text";
+        inputNombreBolo.placeholder = "Nombre del bolo";
+        inputNombreBolo.classList.add(
+            "shadow",
+            "appearance-none",
+            "border",
+            "rounded",
+            "w-full",
+            "py-2",
+            "px-3",
+            "text-gray-700",
+            "leading-tight",
+            "focus:outline-none",
+            "focus:shadow-outline"
+        );
+        contenedor.appendChild(inputNombreBolo);
 
-    // Inicializar con valores por defecto
-    actualizarFormulario();
+        const labelDescripcionBolo =
+            document.createElement("label");
+        labelDescripcionBolo.textContent = "Descripción del bolo:";
+        labelDescripcionBolo.classList.add(
+            "block",
+            "text-gray-700",
+            "text-sm",
+            "font-bold",
+            "mb-2"
+        );
+        contenedor.appendChild(labelDescripcionBolo);
+
+        const inputDescripcionBolo =
+            document.createElement("textarea");
+        inputDescripcionBolo.placeholder = "Descripción del bolo";
+        inputDescripcionBolo.classList.add(
+            "shadow",
+            "appearance-none",
+            "border",
+            "rounded",
+            "w-full",
+            "py-2",
+            "px-3",
+            "text-gray-700",
+            "leading-tight",
+            "focus:outline-none",
+            "focus:shadow-outline"
+        );
+
+        const botonSiguiente = document.createElement("button");
+        botonSiguiente.type = "button";
+        botonSiguiente.textContent = "Siguiente";
+        botonSiguiente.classList.add(
+            "bg-green-500",
+            "hover:bg-green-700",
+            "text-white",
+            "font-bold",
+            "py-2",
+            "px-4",
+            "rounded",
+            "focus:outline-none",
+            "focus:shadow-outline",
+            "border",
+            "border-green-600"
+        );
+        contenedor.appendChild(inputDescripcionBolo);
+        contenedor.appendChild(botonSiguiente);
+
+        botonSiguiente.addEventListener("click",()=>{
+            datosBolo = { 
+                nombre: document.querySelector("input[placeholder='Nombre del bolo']").value, 
+                datos_relevantes: document.querySelector("textarea[placeholder='Descripción del bolo']").value 
+            };
+            console.log(datosBolo);
+            generarFormularioAntes(compostera_id);
+        })
+    }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-function generarFormularioAntes() {
+export function generarFormularioAntes(compostera_seleccionada) {
+    compostera_id = compostera_seleccionada;
     // Seleccionamos el contenedor donde estará el formulario
     const contenedor = document.querySelector("#Datos");
     contenedor.innerHTML = ""; // Limpiar contenido previo
@@ -253,10 +154,16 @@ function generarFormularioAntes() {
         formulario.appendChild(document.createElement("br"));
     });
 
+    const botonAtras = document.createElement("button");
+    botonAtras.type = "button";
+    botonAtras.textContent = "Atras";
+    botonAtras.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
+
     // Crear el botón para pasar al siguiente formulario
     const botonSiguiente = document.createElement("button");
     botonSiguiente.type = "button";
     botonSiguiente.textContent = "Siguiente";
+    botonSiguiente.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
     botonSiguiente.addEventListener("click", function () {
         // Guardar los datos del formulario en la variable datosFormularioAntes
         let temperaturaAmbiental = parseInt(inputs.temperaturaAmbiental.value);
@@ -273,17 +180,24 @@ function generarFormularioAntes() {
         console.log(datosFormularioAntes);
 
         // Limpiar el contenedor y generar el siguiente formulario
-        generarFormularioDurante();
+        generarFormularioDurante(compostera_id);
     });
 
+    botonAtras.addEventListener("click",()=>{
+        contenedor.innerHTML = "";
+        generarFormularioRegistro();
+    });
+    formulario.appendChild(botonAtras);
     formulario.appendChild(botonSiguiente);
+    
 
     // Agregar el formulario al contenedor
     contenedor.appendChild(formulario);
 }
 
 
-function generarFormularioDurante() {
+function generarFormularioDurante(compostera_seleccionada) {
+    compostera_id = compostera_seleccionada;
     // Seleccionar el contenedor donde estará el formulario
     const contenedor = document.querySelector("#Datos");
     contenedor.innerHTML = ""; // Limpiar contenido previo
@@ -329,11 +243,15 @@ function generarFormularioDurante() {
         formulario.appendChild(input);
         formulario.appendChild(document.createElement("br"));
     });
-
+    const botonAtras = document.createElement("button");
+    botonAtras.type = "button";
+    botonAtras.textContent = "Atras";
+    botonAtras.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
     // Crear el botón para pasar al siguiente formulario
     const botonSiguiente = document.createElement("button");
     botonSiguiente.type = "button";
     botonSiguiente.textContent = "Siguiente";
+    botonSiguiente.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
     botonSiguiente.addEventListener("click", function () {
         let aporte_seco = parseInt(inputs.aporte_seco.value);
         let aporte_verde = parseInt(inputs.aporte_verde.value);
@@ -350,16 +268,23 @@ function generarFormularioDurante() {
         console.log(datosFormularioDurante);
 
         // Limpiar el contenedor y generar el siguiente formulario (si existe)
-        generarFormularioDespues(); // Puedes implementar esta función si necesitas otro formulario
+        generarFormularioDespues(compostera_id); // Puedes implementar esta función si necesitas otro formulario
     });
 
+    botonAtras.addEventListener("click",()=>{
+        contenedor.innerHTML = "";
+        boton.classList.add("hidden");
+        generarFormularioAntes();
+    });
+    formulario.appendChild(botonAtras);
     formulario.appendChild(botonSiguiente);
 
     // Agregar el formulario al contenedor
     contenedor.appendChild(formulario);
 }
 
-function generarFormularioDespues() {
+function generarFormularioDespues(compostera_seleccionada) {
+    compostera_id = compostera_seleccionada;
     // Seleccionar el contenedor donde estará el formulario
     const contenedor = document.querySelector("#Datos");
     contenedor.innerHTML = ""; // Limpiar contenido previo
@@ -371,7 +296,8 @@ function generarFormularioDespues() {
     // Crear los campos del formulario según las especificaciones
     const campos = [
         { label: "Nivel de Llenado Final:", type: "select", name: "nivelLlenadoFinal", options: ["0", "12,5", "25"] },
-        { label: "Observación:", type: "textarea", name: "observacion" }
+        { label: "Observación:", type: "textarea", name: "observacion" },
+        {label: "Quieres terminar un ciclo", type:"checkbox", name: "terminaCiclo"},
     ];
 
     const inputs = {}; // Objeto para almacenar referencias a los inputs
@@ -403,19 +329,31 @@ function generarFormularioDespues() {
     });
 
     // Crear el botón para enviar los datos
+    const botonAtras = document.createElement("button");
+    botonAtras.type = "button";
+    botonAtras.textContent = "Atras";
+    botonAtras.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
     const botonEnviar = document.createElement("button");
     botonEnviar.type = "button";
     botonEnviar.textContent = "Enviar";
+    botonEnviar.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline", "border", "border-green-600");
     botonEnviar.addEventListener("click", function () {
         // Guardar los datos del formulario en la variable datosFormularioDespues
         datosFormularioDespues = {
             nivelLlenadoFinal: inputs.nivelLlenadoFinal.value,
             observacion: inputs.observacion.value
         };
+        const terminaCiclo = inputs["terminaCiclo"].checked;
+        console.log(terminaCiclo);
         console.log(datosFormularioDespues);
-        insertarRegistros(datosFormularioRegistro, datosFormularioAntes, datosFormularioDurante, datosFormularioDespues)
+        insertarRegistros(datosBolo,datosFormularioRegistro, datosFormularioAntes, datosFormularioDurante, datosFormularioDespues,compostera_id,terminaCiclo);
     });
 
+    botonAtras.addEventListener("click",()=>{
+        contenedor.innerHTML = "";
+        generarFormularioDurante(compostera_id);
+    });
+    formulario.appendChild(botonAtras);
     formulario.appendChild(botonEnviar);
 
 
@@ -426,108 +364,164 @@ function generarFormularioDespues() {
     console.log(datosBolo);
 }
 
+function obtenerFechaFormatoCorrecto() {
+    const fecha = new Date();
+    return fecha.toISOString().split('T')[0]; // Devuelve solo la parte de la fecha (YYYY-MM-DD)
+}
 
 
 //Primero tienes que introducir el registro a la tabla
 
 
-async function insertarRegistros(datosFormularioRegistro, datosFormularioAntes, datosFormularioDurante, datosFormularioDespues) {
+async function insertarRegistros(datosBolo,datosFormularioRegistro, datosFormularioAntes, datosFormularioDurante, datosFormularioDespues, id_compostera, terminaCiclo) {
     try {
-        // Verificar si hay datos para un nuevo Bolo
-        if (Object.keys(datosBolo).length > 0) {
-            const urlBolo = 'api/bolos';
-            const responseBolo = await fetch(urlBolo, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(datosBolo),
-            });
+        compostera_id = id_compostera;
+        const cicloTerminado = terminaCiclo;
 
-            if (!responseBolo.ok) {
-                throw new Error("Error al insertar el Bolo.");
-            }
+        // Consultar estado actual de la compostera
+        const urlCompostera = `/api/composteras/${compostera_id}`;
+        const compostera = await consulta(urlCompostera);
+        const estadoCompostera = compostera.data.ocupada;
 
-            const BoloCreado = await responseBolo.json(); // Cambié a responseBolo
-            console.log(`Bolo creado con éxito:`, BoloCreado);
-        }
-
-        // Consultar el bolo elegido
-        const urlConsultaBolo = '/api/bolos';
-        const ultimoBolo = await consulta(urlConsultaBolo);
-
-        if (!ultimoBolo) {
-            throw new Error("No se encontró el último Bolo.");
-        }
-        const bolosrecogidos = ultimoBolo.data;
-        console.log(nombreBolo);
-        console.log(bolosrecogidos);
-        const boloseleccionado = bolosrecogidos.find(bolo => bolo.nombre === nombreBolo);
-        console.log(boloseleccionado);
-        const bolo_id = boloseleccionado.id;
-        console.log("El bolo elegido es :", bolo_id);
-
-        // Verificar si es necesario crear un nuevo Ciclo
-
-        function obtenerFechaFormatoCorrecto() {
+        const obtenerFechaFormatoCorrecto = () => {
             const fecha = new Date();
             return fecha.toISOString().split('T')[0]; // Devuelve solo la parte de la fecha (YYYY-MM-DD)
-        }
-        console.log(obtenerFechaFormatoCorrecto());
+        };
 
-        function generarFechaAleatoria() {
-            // Generar una fecha aleatoria entre 1 de enero de 2024 y 31 de diciembre de 2025
-            const inicio = new Date(2024, 12, 1); // 1 de enero de 2024
-            const fin = new Date(2025, 11, 31); // 31 de diciembre de 2025
-        
-            const fechaAleatoria = new Date(inicio.getTime() + Math.random() * (fin.getTime() - inicio.getTime()));
-            return fechaAleatoria.toISOString().split('T')[0]; // Devuelve en formato YYYY-MM-DD
-        }
-        console.log(generarFechaAleatoria());
-        
-        if (datosFormularioRegistro.ciclo_id == null) {
-            const datosCiclo = {
-                fecha_inicio: obtenerFechaFormatoCorrecto(),
-                fecha_fin: generarFechaAleatoria(), // Ejemplo de fecha en formato correcto (YYYY-MM-DD)
-                bolo_id: bolo_id,
-            };
-        
+        if (compostera_id === 1 && !estadoCompostera) {
+            if (Object.keys(datosBolo).length > 0) {
+                console.log(datosBolo);
+                // Insertar bolo
+                const urlBolo = '/api/bolos';
+                const responseBolo = await fetch(urlBolo, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(datosBolo),
+                });
+
+                if (!responseBolo.ok) {
+                    throw new Error("Error al insertar el Bolo.");
+                }
+
+                const BoloCreado = await responseBolo.json();
+                console.log(`Bolo creado con éxito:`, BoloCreado);
+
+                datosCiclo = {
+                    fecha_inicio: obtenerFechaFormatoCorrecto(),
+                    bolo_id: BoloCreado.data.id,
+                    compostera_id: compostera_id,
+                };
+            }
+
+            // Insertar ciclo
             const urlCiclo = '/api/ciclos';
             const responseCiclo = await fetch(urlCiclo, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(datosCiclo),
             });
-        
+
             if (!responseCiclo.ok) {
-                throw new Error("Error al insertar el Ciclo.");
+                throw new Error("Error al insertar el Ciclo");
             }
-        
+
             const CicloCreado = await responseCiclo.json();
             console.log(`Ciclo creado con éxito:`, CicloCreado);
-        }
-        
+        } else if (compostera_id === 2 && !estadoCompostera) {
+            console.log("Esta entrando aqui");
+            const urlBoloCompostera2 = '/api/bolo/compostera2';
+            const boloCompostera2 = await consulta(urlBoloCompostera2);
+            console.log(boloCompostera2);
+            const idBolo = boloCompostera2.id;
+            console.log(`El id del bolo es ${idBolo}`);
 
-        // Consultar el último ciclo insertado en el bolo
-        const urlConsultaCiclo = `/api/bolo/${boloseleccionado.id}/lastCiclo`;
-        const ultimoCiclo = await consulta(urlConsultaCiclo);
+            const datosCiclo = {
+                fecha_inicio: obtenerFechaFormatoCorrecto(),
+                bolo_id: idBolo,
+                compostera_id: compostera_id,
+            };
+
+            const urlCiclo = '/api/ciclos';
+            const responseCiclo = await fetch(urlCiclo, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(datosCiclo),
+            });
+
+            if (!responseCiclo.ok) {
+                throw new Error("Error al insertar el ciclo para compostera 2.");
+            }
+
+            const cicloCreado = await responseCiclo.json();
+            console.log("Ciclo creado para compostera 2:", cicloCreado);
+        } else if (compostera_id === 3 && !estadoCompostera) {
+            // Obtener bolo disponible para compostera 3
+            const urlBoloCompostera3 = '/api/bolo/compostera3';
+            const boloCompostera3 = await consulta(urlBoloCompostera3);
+            console.log(boloCompostera3);
+
+            const idBolo = boloCompostera3.id;
+
+            const datosCiclo = {
+                fecha_inicio: obtenerFechaFormatoCorrecto(),
+                bolo_id: idBolo,
+                compostera_id: compostera_id,
+            };
+
+            const urlCiclo = '/api/ciclos';
+            const responseCiclo = await fetch(urlCiclo, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(datosCiclo),
+            });
+
+            if (!responseCiclo.ok) {
+                throw new Error("Error al insertar el ciclo para compostera 3.");
+            }
+
+            const cicloCreado = await responseCiclo.json();
+            console.log("Ciclo creado para compostera 3:", cicloCreado);
+        }
+
+        // Consultar el último ciclo asociado a la compostera
+        const urlConsultaCiclo = `/api/compostera/${id_compostera}/ciclos?limit=100`;
+        const todosCiclo = await consulta(urlConsultaCiclo);
+        const ultimoCiclo = todosCiclo.data.sort((a, b) => b.id - a.id)[0];
 
         if (!ultimoCiclo) {
             throw new Error("No se encontró el último Ciclo.");
         }
 
+        const ultimobolo_id = ultimoCiclo.bolo_id;
         const ultimociclo_id = ultimoCiclo.id;
-        console.log("ID del último Ciclo:", ultimociclo_id);
-        datosFormularioRegistro.ciclo_id = ultimociclo_id;
+
+        datosFormularioRegistro = {
+            ciclo_id: ultimociclo_id,
+            user_id: user_id,
+            compostera_id: compostera_id,
+        };
+
         console.log(datosFormularioRegistro);
+
         // Insertar el registro inicial
         const urlRegistro = '/api/registros';
         const responseRegistro = await fetch(urlRegistro, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(datosFormularioRegistro),
         });
@@ -555,19 +549,103 @@ async function insertarRegistros(datosFormularioRegistro, datosFormularioAntes, 
         datosFormularioDurante.registro_id = registro_id;
         datosFormularioDespues.registro_id = registro_id;
 
-        // Insertar en la tabla "antes"
+        // Insertar datos adicionales en las tablas relacionadas
         await insertarTabla('api/antes', datosFormularioAntes, 'antes');
-
-        // Insertar en la tabla "durantes"
         await insertarTabla('api/durantes', datosFormularioDurante, 'durante');
-
-        // Insertar en la tabla "despues"
         await insertarTabla('api/despues', datosFormularioDespues, 'despues');
 
+        //Logica para cerrar bolos y ciclos
+
+        // Finalizar ciclo y bolo si corresponde
+        if(cicloTerminado){
+            if(id_compostera == 1){
+                const urlConsultaCiclo = `/api/compostera/${id_compostera}/ciclos?limit=100`;
+                const todosCiclo = await consulta(urlConsultaCiclo);
+                const ultimoregistro = todosCiclo.data.filter(ciclo => !ciclo.terminado).sort((a, b) => b.id - a.id)[0];
+                const ultimobolo_id = ultimoregistro.bolo_id;
+                const ultimociclo_id = ultimoregistro.id;
+                console.log("Esta entrando");
+                console.log(ultimobolo_id);
+                console.log(ultimociclo_id);
+                const estado_bolo = {
+                    "ciclo1": true
+                }
+                const estado_ciclo = {
+                    "fecha_fin": obtenerFechaFormatoCorrecto(),
+                    "terminado": 1,
+                }
+                const estado_compostera ={
+                    "ocupada": false
+                }
+                console.log("Estado enviado:", JSON.stringify(estado_bolo));
+                await cerrarBolo(ultimobolo_id,estado_bolo);
+                await cerrarCiclo(ultimociclo_id,estado_ciclo);
+                await actualizarEstadoCompostera(compostera_id, estado_compostera) ;
+            }
+            else if(compostera_id == 2){
+                const urlConsultaCiclo = `/api/compostera/${id_compostera}/ciclos?limit=100`;
+                const todosCiclo = await consulta(urlConsultaCiclo);
+                const ultimoregistro = todosCiclo.data.filter(ciclo => !ciclo.terminado).sort((a, b) => b.id - a.id)[0];
+                const ultimobolo_id = ultimoregistro.bolo_id;
+                const ultimociclo_id = ultimoregistro.id;
+                console.log("Esta entrando");
+                console.log(ultimobolo_id);
+                console.log(ultimociclo_id);
+                const estado_bolo = {
+                    "ciclo2": true
+                }
+                const estado_ciclo = {
+                    "fecha_fin": obtenerFechaFormatoCorrecto(),
+                    "terminado": 1,
+                }
+                const estado_compostera ={
+                    "ocupada": false
+                }
+                console.log("Estado enviado:", JSON.stringify(estado_bolo));
+                await cerrarBolo(ultimobolo_id,estado_bolo);
+                await cerrarCiclo(ultimociclo_id,estado_ciclo);
+                await actualizarEstadoCompostera(compostera_id, estado_compostera) ;
+            }
+            else if(compostera_id == 3){
+                const urlConsultaCiclo = `/api/compostera/${id_compostera}/ciclos?limit=100`;
+                const todosCiclo = await consulta(urlConsultaCiclo);
+                const ultimoregistro = todosCiclo.data.filter(ciclo => !ciclo.terminado).sort((a, b) => b.id - a.id)[0];
+                const ultimobolo_id = ultimoregistro.bolo_id;
+                const ultimociclo_id = ultimoregistro.id;
+                console.log("Esta entrando");
+                console.log(ultimobolo_id);
+                console.log(ultimociclo_id);
+                const estado_bolo = {
+                    "ciclo3": true,
+                    "terminado": true
+                }
+                const estado_ciclo = {
+                    "fecha_fin": obtenerFechaFormatoCorrecto(),
+                    "terminado": 1,
+                }
+                const estado_compostera ={
+                    "ocupada": false
+                }
+                console.log("Estado enviado:", JSON.stringify(estado_bolo));
+                await cerrarBolo(ultimobolo_id,estado_bolo);
+                await cerrarCiclo(ultimociclo_id,estado_ciclo);
+                await actualizarEstadoCompostera(compostera_id, estado_compostera) ;
+            }
+        }
+
+        // Actualizar compostera si estaba libre
+        if (!estadoCompostera) {
+            const estado_compostera = { ocupada: true };
+            await actualizarEstadoCompostera(compostera_id, estado_compostera);
+        }
+
+        cargarComposteras("Has guardado el registro con éxito");
     } catch (error) {
         console.error('Error en el proceso:', error);
     }
 }
+
+
 
 // Función auxiliar para insertar en una tabla
 async function insertarTabla(url, datos, nombreTabla) {
@@ -575,6 +653,7 @@ async function insertarTabla(url, datos, nombreTabla) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(datos),
     });
@@ -589,7 +668,13 @@ async function insertarTabla(url, datos, nombreTabla) {
 
 // Función auxiliar para consultar datos desde la API
 async function consulta(url) {
-    const response = await fetch(url);
+    const response = await fetch(url,{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
     if (!response.ok) {
         if (response.status === 404) {
             return null; // Registro no encontrado
@@ -599,7 +684,83 @@ async function consulta(url) {
     return await response.json();
 }
 
+async function actualizarEstadoCompostera(compostera_id, estado_compostera) {
+    const urlCambiarestado = `/api/composteras/${compostera_id}`;
+
+    try {
+        const response = await fetch(urlCambiarestado, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(estado_compostera),
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al actualizar la compostera');
+        }
+
+        const data = await response.json();
+        console.log('Compostera actualizada con éxito:', data);
+        return data; // Retorna la respuesta si es necesario
+    } catch (error) {
+        console.error('Error:', error);
+        throw error; // Lanza el error para que pueda ser manejado en otro lugar si es necesario
+    }
+}
+
+async function cerrarBolo(bolo_id,estado_bolo) {
+    const urlCerrarBolo = `/api/bolos/${bolo_id}`;
+    try {
+        const response = await fetch(urlCerrarBolo, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(estado_bolo),
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al actualizar los datos del bolo');
+        }
+
+        const data = await response.json();
+        console.log('Bolo actualizado con exito:', data);
+        return data; // Retorna la respuesta si es necesario
+    } catch (error) {
+        console.error('Error:', error);
+        throw error; // Lanza el error para que pueda ser manejado en otro lugar si es necesario
+    }
+}
+
+async function cerrarCiclo(ciclo_id,estado_ciclo) {
+    const urlCerrarCiclo = `/api/ciclos/${ciclo_id}`;
+    try {
+        const response = await fetch(urlCerrarCiclo, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(estado_ciclo),
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al cerrar el ciclo 1 del bolo');
+        }
+
+        const data = await response.json();
+        console.log('Ciclo cerrado con exito:', data);
+        return data; // Retorna la respuesta si es necesario
+    } catch (error) {
+        console.error('Error:', error);
+        throw error; // Lanza el error para que pueda ser manejado en otro lugar si es necesario
+    }
+}
 
 
 
-export {generarFormularioRegistro};
+
+
