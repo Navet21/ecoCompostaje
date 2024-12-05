@@ -91,3 +91,9 @@ Route::get('ciclo/last', [CiclosController::class,'ultimoCiclo']);
 
 //Obtener ultimo ciclo del bolo que corresponda
 Route::get('compostera/{compostera}/ciclos/ultimo', [ComposteraCiclosController::class, 'ultimoCiclo']);
+
+//Obtener bolo para compostera 2
+Route::get('bolo/compostera2', [BoloController::class, 'bolocompostera2']);
+
+//Obtener bolo para compostera 3
+Route::get('bolo/compostera3', [BoloController::class, 'bolocompostera3']);

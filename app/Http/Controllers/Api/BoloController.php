@@ -17,4 +17,13 @@ class BoloController extends Controller
         return response()->json($ultimoBolo,200);
     }
 
+    public function bolocompostera2(){
+        $bolo = Bolo::where('ciclo1',true)->where('terminado',false)->first();
+        return response()->json($bolo,200);
+    }
+    public function bolocompostera3(){
+        $bolo = Bolo::where('ciclo1',true)->where('ciclo2',true)->where('terminado',false)->first();
+        return response()->json($bolo,200);
+    }
+
 }

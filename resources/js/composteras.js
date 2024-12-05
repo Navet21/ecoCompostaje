@@ -10,7 +10,7 @@ let datosFormularioAntes = {};
 let datosFormularioDespues = {};
 let datosFormularioDurante = {};
 
-let datos_bolo = {};
+let datos_bolo;
 
 console.log(token);
 
@@ -20,7 +20,7 @@ async function consulta(url) {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`,
         },
     });
     if (!response.ok) {
@@ -32,9 +32,13 @@ async function consulta(url) {
     return await response.json();
 }
 
+
+
 // Función para cargar datos de una página específica
-export function generarComposteras(mensajeExito = null) {
+export async function generarComposteras(mensajeExito = null) {
     // Limpiar el contenedor
+    const datos_bolos = ejecutarSaberBolos();
+    console.log(datos_bolos);
     contenedor.innerHTML = "";
 
     // Si se pasa el mensaje de éxito, mostrar el alert al principio
@@ -101,18 +105,40 @@ export function generarComposteras(mensajeExito = null) {
         boton.className = "bg-green-500 text-white px-4 py-2 rounded";
         boton.textContent = "Nuevo Registro";
         boton.addEventListener("click", () => {
-            if (estado) {
-                alert(
-                    "La compostera ya está ocupada por un bolo, introduce un registro"
-                );
-                generarFormularioAntes(compostera_id);
-            } else {
-                alert(
-                    "La compostera está libre, tienes que crear un bolo y un ciclo para poder introducir un registro"
-                );
-                if (compostera_id == 1) {
+            if (compostera_id == 1) {
+                if(estado){
+                    alert(
+                        "La compostera ya está ocupada por un bolo, introduce un registro"
+                    );
+                    generarFormularioAntes(compostera_id);
+                }
+                else{
+                    alert(
+                        "La compostera está libre, tienes que crear un bolo y un ciclo para poder introducir un registro"
+                    );
                     generarFormularioBolo(compostera_id);
-                } else {
+                }
+            } else if(compostera_id == 2){
+                if(estado){
+                    alert(
+                        "La compostera ya está ocupada por un bolo, introduce un registro"
+                    );
+                    generarFormularioAntes(compostera_id);
+                }
+                else{
+                    alert(
+                        "La compostera está libre, añadiendo el bolo correspondiente"
+                    );
+                    generarFormularioAntes(compostera_id);
+                }
+            }
+            else if(compostera_id == 3){
+                if(estado){
+                    "La compostera ya está ocupada por un bolo, introduce un registro"
+                    generarFormularioAntes(compostera_id);
+                }
+                else{
+                    "La compostera está libre, añadiendo el bolo correspondiente";
                     generarFormularioAntes(compostera_id);
                 }
             }
@@ -127,6 +153,42 @@ export function generarComposteras(mensajeExito = null) {
 
     // Agregar el fragmento al contenedor
     contenedor.appendChild(fragmento);
+}
+
+export async function saberBolos(){
+    try {
+        const url = `/api/bolos`;
+        const registros = await consulta(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        // Limpiar y actualizar los datos
+        datos = [];
+        registros.data.forEach((registro) => {
+            datos.push({
+                id: registro.id,
+                terminado: registro.terminado,
+                ciclo1: registro.ciclo1,
+                ciclo2: registro.ciclo2,
+                ciclo3: registro.ciclo3,
+            });
+        });   
+    } catch (error) {
+        console.error("Error al cargar datos:", error.message);
+    }
+}
+
+async function ejecutarSaberBolos() { 
+    try { 
+        const datos_bolos = await saberBolos(); 
+        //Aquí puedes usar los datos_bolos como necesites
+        console.log(datos_bolos); 
+    } catch (error) { 
+        console.error("Error al ejecutar saberBolos:", error.message);
+    }
 }
 
 
