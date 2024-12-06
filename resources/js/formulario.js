@@ -1,4 +1,4 @@
-import {cargarComposteras,generarComposteras} from "/resources/js/composteras";
+import { cargarComposteras } from "/resources/js/composteras";
 
 const token = sessionStorage.getItem("token");
 const paginacion = document.querySelector('#paginacion');

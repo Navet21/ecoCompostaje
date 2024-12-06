@@ -1,21 +1,24 @@
 import { consulta } from "/resources/js/composteras";
-import { manejarBotones } from "/resources/js/registros";
 
-let datos = [];
+let datosBolos = [];
 const contenedor = document.querySelector("#Datos");
 const btnAnterior = document.querySelector("#btnAnterior");
 const btnSiguiente = document.querySelector("#btnSiguiente");
 const spanPaginaActual = document.querySelector("#paginaActual");
 
-export async function cargarBolos(pagina) {
+
+
+
+
+async function cargarBolos(pagina) {
     try {
         const url = `/api/bolos?page=${pagina}&per_page=20`;
         const registros = await consulta(url);
         console.log(registros.meta);
         // Limpiar y actualizar los datos
-        datos = [];
+        datosBolos = [];
         registros.data.forEach(registro => {
-            datos.push({
+            datosBolos.push({
                 id: registro.id,
                 nombre: registro.nombre,
                 datos_relevantes: registro.datos_relevantes,
@@ -26,19 +29,16 @@ export async function cargarBolos(pagina) {
                 fecha_inicio : registro.created_at
             });
         });
-
-        //Actualizar la tabla con los nuevos datos
         generarTablaBolos();
-
-
+        //Actualizar la tabla con los nuevos datos
         // Actualizar botones de paginación y número de página
-        manejarBotones(registros.meta);
     } catch (error) {
         console.error("Error al cargar datos:", error.message);
     }
+    
 }
 
-function generarTablaBolos() {
+export function generarTablaBolos() {
     // Limpiar el contenedor
     contenedor.innerHTML = "";
     btnAnterior.classList.remove("hidden");
@@ -80,7 +80,7 @@ function generarTablaBolos() {
 
     // Crear cuerpo de la tabla
     const cuerpo = document.createElement("tbody");
-    datos.forEach(dato => {
+    datosBolos.forEach(dato => {
         const fila = document.createElement("tr");
 
         const celdaId = document.createElement("td");
@@ -145,5 +145,5 @@ function generarTablaBolos() {
     contenedor.appendChild(fragmento);
 }
 
-
+export {cargarBolos};
 

@@ -3,7 +3,6 @@ import {
     generarFormularioAntes,
 } from "/resources/js/formulario";
 
-let datos = []; // Array para almacenar los datos de la API
 let datosCompostera =[];
 const contenedor = document.querySelector("#Datos");
 const token = sessionStorage.getItem("token");

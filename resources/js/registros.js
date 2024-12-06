@@ -14,9 +14,10 @@ const bolos = document.querySelector("#Bolos");
 
 cargarComposteras();
 
+
 registros.addEventListener("click",()=> cargarDatos(paginaActual));
 composteras.addEventListener("click",() => generarComposteras());
-bolos.addEventListener("click", () => cargarBolos(1));
+bolos.addEventListener("click", () => cargarBolos(paginaActual));
 
 
 
