@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\UserRegistrosController;
 use App\Http\Controllers\Api\BoloCiclosController;
 use App\Http\Controllers\Api\CiclosController;
 use App\Http\Controllers\Api\BoloController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ComposterasController;
 use App\Http\Controllers\Api\CicloComposteraController;
 use App\Http\Controllers\Api\ComposteraCiclosController;
@@ -63,6 +64,11 @@ Route::group(['as' => 'api.'], function() {
 //Rutas para los registros antes
 Route::group(['as' => 'api.'], function() {
     Orion::resource('despues', DespuesController::class);
+});
+
+//Usuarios
+Route::group(['as' => 'api.'], function() {
+    Orion::resource('users', UserController::class);
 });
 
 //Relaciones

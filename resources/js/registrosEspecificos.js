@@ -1,7 +1,17 @@
+const btnAnterior = document.querySelector("#btnAnterior");
+const btnSiguiente = document.querySelector("#btnSiguiente");
+const spanPaginaActual = document.querySelector("#paginaActual");
+const token = sessionStorage.getItem("token");
+async function consulta(url) { // Reemplaza con tu token real
 
+    const response = await fetch(url, {
+        method: "GET", // O el método que necesites (por defecto es GET)
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json", // Opcional, si estás enviando o esperando JSON
+        },
+    });
 
-async function consulta(url) {
-    const response = await fetch(url);
     if (!response.ok) {
         if (response.status === 404) {
             return null; // Lugar no encontrado
@@ -12,8 +22,11 @@ async function consulta(url) {
 }
 
 
+
 // Función para consultar y generar las tablas
 async function consultarADD(e) {
+    e.preventDefault();
+
     let antes = [];
     let durante = [];
     let despues = [];
@@ -63,12 +76,15 @@ async function consultarADD(e) {
     console.log(despues);
 
     // Generar las tablas con los datos filtrados
-    generarTablas(antes, durante, despues);
+    generarTablasRegistros(antes, durante, despues);
 }
 
 // Función para generar las tablas en el DOM
-function generarTablas(antes, durante, despues) {
+function generarTablasRegistros(antes, durante, despues) {
     // Seleccionamos el contenedor donde estarán las tablas
+    btnAnterior.classList.add("hidden");
+    btnSiguiente.classList.add("hidden");
+    spanPaginaActual.classList.add("hidden");
     const contenedor = document.querySelector("#Datos");
     contenedor.innerHTML = ""; // Limpiar contenido previo
 
@@ -150,4 +166,4 @@ function generarTablas(antes, durante, despues) {
 
 
 
-export {consultarADD, generarTablas};
+export {consultarADD, generarTablasRegistros};

@@ -4,18 +4,19 @@ import {
 } from "/resources/js/formulario";
 
 let datos = []; // Array para almacenar los datos de la API
+let datosCompostera =[];
 const contenedor = document.querySelector("#Datos");
 const token = sessionStorage.getItem("token");
-let datosFormularioAntes = {};
-let datosFormularioDespues = {};
-let datosFormularioDurante = {};
+const btnAnterior = document.querySelector("#btnAnterior");
+const btnSiguiente = document.querySelector("#btnSiguiente");
+const spanPaginaActual = document.querySelector("#paginaActual");
 
-let datos_bolo;
+
 
 console.log(token);
 
 // Función para consultar datos desde la API
-async function consulta(url) {
+export async function consulta(url) {
     const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -38,6 +39,9 @@ async function consulta(url) {
 export async function generarComposteras(mensajeExito = null) {
     // Limpiar el contenedor
     contenedor.innerHTML = "";
+    btnAnterior.classList.add("hidden");
+    btnSiguiente.classList.add("hidden");
+    spanPaginaActual.classList.add("hidden");
 
     // Si se pasa el mensaje de éxito, mostrar el alert al principio
     if (mensajeExito) {
@@ -79,7 +83,7 @@ export async function generarComposteras(mensajeExito = null) {
     const fragmento = document.createDocumentFragment();
 
     // Crear y agregar las cards
-    datos.forEach((dato) => {
+    datosCompostera.forEach((dato) => {
         const card = document.createElement("div");
         card.className =
             "bg-white shadow-md rounded-lg p-4 border border-gray-300 w-60 flex justify-between items-center";
@@ -210,6 +214,7 @@ export async function saberBolos() {
 
 export async function cargarComposteras(mensajeExito = null) {
     try {
+        
         const url = `/api/composteras`;
         const registros = await consulta(url, {
             method: "GET",
@@ -219,9 +224,9 @@ export async function cargarComposteras(mensajeExito = null) {
             },
         });
         // Limpiar y actualizar los datos
-        datos = [];
+        datosCompostera = [];
         registros.data.forEach((registro) => {
-            datos.push({
+            datosCompostera.push({
                 id: registro.id,
                 tipo: registro.tipo,
                 centro_id: registro.centro_id,

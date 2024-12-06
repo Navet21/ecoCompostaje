@@ -11,7 +11,6 @@ class UserRegistrosController extends RelationController
     /**
      * Fully-qualified model class name
      */
-    use DisableAuthorization;
     protected $model = User::class; // or "App\Models\Post"
 
     /**
