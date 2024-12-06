@@ -26,4 +26,10 @@ class BoloController extends Controller
         return response()->json($bolo,200);
     }
 
+    public function boloSinTerminar(){
+        $bolo = Bolo::where('terminado', false)->get(); 
+        return response()->json($bolo, 200);
+    }
+    
+
 }

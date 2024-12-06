@@ -97,3 +97,6 @@ Route::get('bolo/compostera2', [BoloController::class, 'bolocompostera2']);
 
 //Obtener bolo para compostera 3
 Route::get('bolo/compostera3', [BoloController::class, 'bolocompostera3']);
+
+//Obtener bolos sin terminar
+Route::get('bolo/sinterminar', [BoloController::class, 'boloSinTerminar']);
