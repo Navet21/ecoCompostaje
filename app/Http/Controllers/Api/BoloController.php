@@ -9,7 +9,6 @@ use Orion\Http\Controllers\Controller;
 class BoloController extends Controller
 {
 
-    use DisableAuthorization;
     protected $model = Bolo::class; // or "App\Models\Post"
 
     public function ultimoBolo(){
@@ -25,5 +24,11 @@ class BoloController extends Controller
         $bolo = Bolo::where('ciclo1',true)->where('ciclo2',true)->where('terminado',false)->first();
         return response()->json($bolo,200);
     }
+
+    public function boloSinTerminar(){
+        $bolo = Bolo::where('terminado', false)->get(); 
+        return response()->json($bolo, 200);
+    }
+    
 
 }

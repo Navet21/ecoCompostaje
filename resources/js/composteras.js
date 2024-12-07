@@ -3,19 +3,19 @@ import {
     generarFormularioAntes,
 } from "/resources/js/formulario";
 
-let datos = []; // Array para almacenar los datos de la API
+let datosCompostera =[];
 const contenedor = document.querySelector("#Datos");
 const token = sessionStorage.getItem("token");
-let datosFormularioAntes = {};
-let datosFormularioDespues = {};
-let datosFormularioDurante = {};
+const btnAnterior = document.querySelector("#btnAnterior");
+const btnSiguiente = document.querySelector("#btnSiguiente");
+const spanPaginaActual = document.querySelector("#paginaActual");
 
-let datos_bolo;
+
 
 console.log(token);
 
 // Función para consultar datos desde la API
-async function consulta(url) {
+export async function consulta(url) {
     const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -37,9 +37,10 @@ async function consulta(url) {
 // Función para cargar datos de una página específica
 export async function generarComposteras(mensajeExito = null) {
     // Limpiar el contenedor
-    const datos_bolos = ejecutarSaberBolos();
-    console.log(datos_bolos);
     contenedor.innerHTML = "";
+    btnAnterior.classList.add("hidden");
+    btnSiguiente.classList.add("hidden");
+    spanPaginaActual.classList.add("hidden");
 
     // Si se pasa el mensaje de éxito, mostrar el alert al principio
     if (mensajeExito) {
@@ -65,11 +66,23 @@ export async function generarComposteras(mensajeExito = null) {
         contenedor.appendChild(alerta); // Agregar la alerta al contenedor
     }
 
+    // Obtener los bolos filtrados
+    const datos_bolos = await saberBolos();
+    console.log(datos_bolos);
+    const bolosCiclo1y2 = datos_bolos.filter((bolo) => {;
+        return bolo.ciclo1 == true && bolo.ciclo2 == true;
+    });
+    console.log("eeeo",bolosCiclo1y2);
+    const bolosSoloCiclo1 = datos_bolos.filter((bolo) => {
+        return bolo.ciclo1 == true && bolo.ciclo2 != true && bolo.ciclo3 != true;
+    });
+    console.log("eeeeeeeo", bolosSoloCiclo1);
+
     // Crear un fragmento para construir la tabla
     const fragmento = document.createDocumentFragment();
 
     // Crear y agregar las cards
-    datos.forEach((dato) => {
+    datosCompostera.forEach((dato) => {
         const card = document.createElement("div");
         card.className =
             "bg-white shadow-md rounded-lg p-4 border border-gray-300 w-60 flex justify-between items-center";
@@ -104,41 +117,57 @@ export async function generarComposteras(mensajeExito = null) {
         const boton = document.createElement("button");
         boton.className = "bg-green-500 text-white px-4 py-2 rounded";
         boton.textContent = "Nuevo Registro";
+
+        // Deshabilitar el botón según las condiciones de los bolos
+        console.log(bolosCiclo1y2);
+        console.log("Longitud de bolo con ciclo 1 terminado: ", bolosCiclo1y2);
+        if (compostera_id == 2 && bolosSoloCiclo1.length < 1) {
+            boton.disabled = true;
+            boton.classList.add("bg-gray-400", "cursor-not-allowed");
+            boton.classList.remove("bg-green-500");
+        }
+
+        if (compostera_id === 3 && bolosCiclo1y2.length == 0) {
+            boton.disabled = true;
+            boton.classList.add("bg-gray-400", "cursor-not-allowed");
+            boton.classList.remove("bg-green-500");;
+        }
+
         boton.addEventListener("click", () => {
             if (compostera_id == 1) {
-                if(estado){
+                if (estado) {
                     alert(
                         "La compostera ya está ocupada por un bolo, introduce un registro"
                     );
                     generarFormularioAntes(compostera_id);
-                }
-                else{
+                } else {
                     alert(
                         "La compostera está libre, tienes que crear un bolo y un ciclo para poder introducir un registro"
                     );
                     generarFormularioBolo(compostera_id);
                 }
-            } else if(compostera_id == 2){
-                if(estado){
+            } else if (compostera_id == 2) {
+                if (estado) {
                     alert(
                         "La compostera ya está ocupada por un bolo, introduce un registro"
                     );
                     generarFormularioAntes(compostera_id);
-                }
-                else{
+                } else {
                     alert(
                         "La compostera está libre, añadiendo el bolo correspondiente"
                     );
                     generarFormularioAntes(compostera_id);
                 }
-            }
-            else if(compostera_id == 3){
-                if(estado){
-                    alert("La compostera ya está ocupada por un bolo, introduce un registro");
+            } else if (compostera_id == 3) {
+                if (estado) {
+                    alert(
+                        "La compostera ya está ocupada por un bolo, introduce un registro"
+                    );
                     generarFormularioAntes(compostera_id);
-                }
-                else{
-                    alert("La compostera está libre, añadiendo el bolo correspondiente");
+                } else {
+                    alert(
+                        "La compostera está libre, añadiendo el bolo correspondiente"
+                    );
                     generarFormularioAntes(compostera_id);
                 }
             }
@@ -155,9 +184,10 @@ export async function generarComposteras(mensajeExito = null) {
     contenedor.appendChild(fragmento);
 }
 
-export async function saberBolos(){
+
+export async function saberBolos() {
     try {
-        const url = `/api/bolos`;
+        const url = `/api/bolo/sinterminar`;
         const registros = await consulta(url, {
             method: "GET",
             headers: {
@@ -165,35 +195,25 @@ export async function saberBolos(){
                 Authorization: `Bearer ${token}`,
             },
         });
+
         // Limpiar y actualizar los datos
-        datos = [];
-        registros.data.forEach((registro) => {
-            datos.push({
-                id: registro.id,
-                terminado: registro.terminado,
-                ciclo1: registro.ciclo1,
-                ciclo2: registro.ciclo2,
-                ciclo3: registro.ciclo3,
-            });
-        });   
+        const datos = registros.map((registro) => ({
+            id: registro.id,
+            terminado: registro.terminado,
+            ciclo1: registro.ciclo1,
+            ciclo2: registro.ciclo2,
+            ciclo3: registro.ciclo3,
+        }));
+        return datos; // Devolver los datos procesados
     } catch (error) {
         console.error("Error al cargar datos:", error.message);
+        return []; // Devuelve un array vacío en caso de error
     }
 }
-
-async function ejecutarSaberBolos() { 
-    try { 
-        const datos_bolos = await saberBolos(); 
-        //Aquí puedes usar los datos_bolos como necesites
-        console.log(datos_bolos); 
-    } catch (error) { 
-        console.error("Error al ejecutar saberBolos:", error.message);
-    }
-}
-
 
 export async function cargarComposteras(mensajeExito = null) {
     try {
+        
         const url = `/api/composteras`;
         const registros = await consulta(url, {
             method: "GET",
@@ -203,15 +223,16 @@ export async function cargarComposteras(mensajeExito = null) {
             },
         });
         // Limpiar y actualizar los datos
-        datos = [];
+        datosCompostera = [];
         registros.data.forEach((registro) => {
-            datos.push({
+            datosCompostera.push({
                 id: registro.id,
                 tipo: registro.tipo,
                 centro_id: registro.centro_id,
                 ocupada: registro.ocupada,
             });
         });
+
         // Actualizar la tabla con los nuevos datos
         if(mensajeExito){
             generarComposteras(mensajeExito);
@@ -225,26 +246,4 @@ export async function cargarComposteras(mensajeExito = null) {
     }
 }
 
-// async function verEstadoComposteras(id){
-//     try {
-//         const url = `/api/centros/${id}/composteras`;
-//         const registros = await consulta(url,{
-//             method: 'GET',
-//             headers:{
-//                 'Content-Type': 'application/json',
-//                 'Authorization': `Bearer ${token}`
-//             }
-//         });
-//         datos_compostera = {};
-//         datos_compostera = registros.data.forEach(registro=>{
-//             datos_compostera.push({
-//                 id: registro.id,
-//                 ocupada: registro.ocupada,
-//             });
-//         });
-//     }
-//     catch(error){
-//         console.log("Error al cargar la compostera", error.message);
-//     }
-// }
 
