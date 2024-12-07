@@ -1,4 +1,5 @@
 import { consulta } from "/resources/js/composteras";
+import {consultarCiclosBolo, generarTablasCiclos} from "/resources/js/ciclosBolos";
 
 let datosBolos = [];
 const contenedor = document.querySelector("#Datos");
@@ -47,7 +48,7 @@ export function generarTablaBolos() {
 
     // Crear un contenedor para hacer la tabla responsive
     const tablaWrapper = document.createElement("div");
-    tablaWrapper.className = "overflow-x-auto";
+    tablaWrapper.className = "overflow-x-auto mt-8 px-4"; // Márgenes laterales y superior añadidos
 
     // Crear un fragmento para construir la tabla
     const fragmento = document.createDocumentFragment();
@@ -59,7 +60,7 @@ export function generarTablaBolos() {
     // Crear y agregar cabeceras a la tabla
     const cabecera = document.createElement("thead");
     const filaCabecera = document.createElement("tr");
-    filaCabecera.className = "bg-green-500 text-black font-bold"; // Fondo verde y texto negro
+    filaCabecera.className = "bg-green-500 text-white font-bold"; // Fondo verde claro y texto blanco
 
     const cabeceras = [
         "ID Bolo",
@@ -67,9 +68,9 @@ export function generarTablaBolos() {
         "Datos Relevantes",
         "Ciclo en Curso",
         "Estado",
-        "Fecha Inicio"
+        "Fecha Inicio",
     ];
-    cabeceras.forEach(texto => {
+    cabeceras.forEach((texto) => {
         const th = document.createElement("th");
         th.className = "border border-gray-300 px-4 py-2 text-center"; // Centramos cabeceras
         th.textContent = texto;
@@ -80,12 +81,19 @@ export function generarTablaBolos() {
 
     // Crear cuerpo de la tabla
     const cuerpo = document.createElement("tbody");
-    datosBolos.forEach(dato => {
+    datosBolos.forEach((dato) => {
         const fila = document.createElement("tr");
 
         const celdaId = document.createElement("td");
         celdaId.className = "border border-gray-300 px-4 py-2 text-center align-middle"; // Centramos celdas
-        celdaId.textContent = dato.id;
+        const enlace = document.createElement("a");
+        enlace.id = dato.id;
+        enlace.href = "#";
+        enlace.textContent = dato.id;
+        enlace.className = "text-blue-600 hover:underline";
+
+        enlace.addEventListener("click", consultarCiclosBolo);
+        celdaId.appendChild(enlace);
         fila.appendChild(celdaId);
 
         const celdaNombre = document.createElement("td");
@@ -144,6 +152,8 @@ export function generarTablaBolos() {
     // Agregar el fragmento al contenedor
     contenedor.appendChild(fragmento);
 }
+
+
 
 export {cargarBolos};
 

@@ -607,8 +607,10 @@ async function insertarRegistros(datosBolo,datosFormularioRegistro, datosFormula
                 await actualizarEstadoCompostera(compostera_id, estado_compostera) ;
             }
             else if(compostera_id == 3){
+                console.log("Entra aqui");
                 const urlConsultaCiclo = `/api/compostera/${id_compostera}/ciclos?limit=100`;
                 const todosCiclo = await consulta(urlConsultaCiclo);
+                console.log(todosCiclo);
                 const ultimoregistro = todosCiclo.data.filter(ciclo => !ciclo.terminado).sort((a, b) => b.id - a.id)[0];
                 const ultimobolo_id = ultimoregistro.bolo_id;
                 const ultimociclo_id = ultimoregistro.id;

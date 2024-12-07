@@ -88,6 +88,9 @@ function generarTablasRegistros(antes, durante, despues) {
     const contenedor = document.querySelector("#Datos");
     contenedor.innerHTML = ""; // Limpiar contenido previo
 
+    // Añadimos padding lateral al contenedor
+    contenedor.className = "px-6"; // Ajusta el padding según necesidad
+
     // Función para crear una tabla
     function crearTabla(datos, cabeceraTexto) {
         // Crear un fragmento para optimizar la manipulación del DOM
@@ -95,7 +98,7 @@ function generarTablasRegistros(antes, durante, despues) {
 
         // Crear la tabla y configurarla
         const tabla = document.createElement("table");
-        tabla.style.border = "1px solid black";
+        tabla.style.border = "1px solid gray"; // Líneas grises
         tabla.style.width = "100%";
         tabla.style.borderCollapse = "collapse";
         tabla.style.marginBottom = "20px"; // Espaciado entre tablas
@@ -103,12 +106,14 @@ function generarTablasRegistros(antes, durante, despues) {
         // Crear y agregar cabecera
         const cabecera = document.createElement("thead");
         const filaCabecera = document.createElement("tr");
-        cabeceraTexto.forEach(texto => {
+        cabeceraTexto.forEach((texto) => {
             const th = document.createElement("th");
             th.textContent = texto;
-            th.style.border = "1px solid black";
+            th.style.border = "1px solid gray"; // Líneas grises
             th.style.padding = "8px";
-            th.style.backgroundColor = "#f0f0f0"; // Fondo claro para cabecera
+            th.style.backgroundColor = "#32CD32"; // Fondo verde claro
+            th.style.color = "white"; // Texto blanco
+            th.style.textAlign = "center"; // Centrar texto
             filaCabecera.appendChild(th);
         });
         cabecera.appendChild(filaCabecera);
@@ -116,13 +121,14 @@ function generarTablasRegistros(antes, durante, despues) {
 
         // Crear y agregar cuerpo de la tabla
         const cuerpo = document.createElement("tbody");
-        datos.forEach(dato => {
+        datos.forEach((dato) => {
             const fila = document.createElement("tr");
-            Object.values(dato).forEach(valor => {
+            Object.values(dato).forEach((valor) => {
                 const celda = document.createElement("td");
-                celda.textContent = valor;
-                celda.style.border = "1px solid black";
+                celda.textContent = valor || "No registrado"; // Reemplazar valores vacíos
+                celda.style.border = "1px solid gray"; // Líneas grises
                 celda.style.padding = "8px";
+                celda.style.textAlign = "center"; // Centrar texto
                 fila.appendChild(celda);
             });
             cuerpo.appendChild(fila);
@@ -146,23 +152,58 @@ function generarTablasRegistros(antes, durante, despues) {
     }
 
     // Crear y agregar la tabla de 'antes'
-    contenedor.appendChild(crearTitulo("Datos Antes"));
-    const cabeceraAntes = ["ID Registro", "Temperatura Ambiental", "Temperatura Compostera", "Nivel Llenado Inicial", "Olor", "Insectos", "Humedad", "Observación"];
+    contenedor.appendChild(crearTitulo("Datos de antes del Registro"));
+    const cabeceraAntes = [
+        "ID Registro",
+        "Temperatura Ambiental",
+        "Temperatura Compostera",
+        "Nivel Llenado Inicial",
+        "Olor",
+        "Insectos",
+        "Humedad",
+        "Observación",
+    ];
     const tablaAntes = crearTabla(antes, cabeceraAntes);
     contenedor.appendChild(tablaAntes);
 
     // Crear y agregar la tabla de 'durante'
-    contenedor.appendChild(crearTitulo("Datos Durante"));
-    const cabeceraDurante = ["ID Registro", "Revolver", "Aporte Verde", "Tipo Aporte Verde", "Aporte Seco", "Tipo Aporte Seco", "Observación"];
+    contenedor.appendChild(crearTitulo("Datos durante el Registro"));
+    const cabeceraDurante = [
+        "ID Registro",
+        "Revolver",
+        "Aporte Verde",
+        "Tipo Aporte Verde",
+        "Aporte Seco",
+        "Tipo Aporte Seco",
+        "Observación",
+    ];
     const tablaDurante = crearTabla(durante, cabeceraDurante);
     contenedor.appendChild(tablaDurante);
 
-    // Crear y agregar la tabla de 'despues'
-    contenedor.appendChild(crearTitulo("Datos Después"));
+    // Crear y agregar la tabla de 'después'
+    contenedor.appendChild(crearTitulo("Datos después del Registro"));
     const cabeceraDespues = ["ID Registro", "Nivel Llenado Final", "Observación"];
     const tablaDespues = crearTabla(despues, cabeceraDespues);
     contenedor.appendChild(tablaDespues);
+
+    // Crear y agregar el botón de edición
+    const botonEditarWrapper = document.createElement("div");
+    botonEditarWrapper.className = "flex justify-center mt-4"; // Centrar el botón
+
+    const botonEditar = document.createElement("button");
+    botonEditar.textContent = "Editar Datos";
+    botonEditar.className =
+        "bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-700";
+    botonEditar.addEventListener("click", () => {
+        console.log("Editar datos presionado.");
+        // Aquí puedes agregar la lógica para editar los datos
+    });
+
+    botonEditarWrapper.appendChild(botonEditar);
+    contenedor.appendChild(botonEditarWrapper);
 }
+
+
 
 
 
