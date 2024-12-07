@@ -20,7 +20,7 @@ class BoloFactory extends Factory
     {
         return [
             'nombre' => $this->faker->sentence,
-            'created_at' => fake()->date(),
+            'created_at' => fake()->dateTimeBetween('2024-01-01', '2024-12-01'),
             'updated_at' => fake()->date(),
             'datos_relevantes' => $this->faker->sentence,
             'terminado' => fake()->boolean(),

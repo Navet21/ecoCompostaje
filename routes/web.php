@@ -18,6 +18,7 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('users', UserController::class)->middleware('can:administrate,App\Models\User');
 
-Route::get('/analisis', [AnalisisController::class, 'index']);
+Route::get('/analisis', [AnalisisController::class, 'index'])->name('analisis');
+
 
 require __DIR__ . '/auth.php';
