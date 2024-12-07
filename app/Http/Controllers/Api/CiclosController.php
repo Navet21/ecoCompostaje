@@ -9,7 +9,6 @@ use Orion\Http\Controllers\Controller;
 class CiclosController extends Controller
 {
 
-    use DisableAuthorization;
     protected $model = Ciclo::class; // or "App\Models\Post"
 
     public function ultimoCiclo(){

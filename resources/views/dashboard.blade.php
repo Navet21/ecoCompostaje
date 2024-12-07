@@ -1,24 +1,28 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
+        <div class="flex items-center space-x-4">
+            <h2 id="Composteras" class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                <a href="#Composteras">Composteras</a>
+            </h2>
+            <h2 id="Registros" class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                <a href="#Registros">Registros</a>
+            </h2>
+            <h2 id="Bolos" class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                <a href="#Bolos">Bolos</a>
+            </h2>
+        </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if (session('token'))
-
                 <script>
                     sessionStorage.setItem('idUsuario', {{ Auth::user()->id }});
                     sessionStorage.setItem('token', @json(session('token')));
-
                 </script>    
-
             @endif
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <input id="user_id" value="{{ Auth::user()->id }}" name="user_id" type="hidden">
-                <button id="composteras">Composteras</button>
                 <div id="Datos"></div>
                 <div id="paginacion" class="flex justify-between mt-4">
                     <button id="btnAnterior"

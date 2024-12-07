@@ -1,5 +1,6 @@
 import { consultarADD } from "/resources/js/registrosEspecificos";
-import { cargarComposteras } from "/resources/js/composteras";
+import { cargarComposteras, consulta, generarComposteras } from "/resources/js/composteras";
+import { cargarBolos } from "/resources/js/bolos";
 
 let datos = []; // Array para almacenar los datos de la API
 let paginaActual = 1; // Página inicial
@@ -7,16 +8,23 @@ const contenedor = document.querySelector("#Datos");
 const btnAnterior = document.querySelector("#btnAnterior");
 const btnSiguiente = document.querySelector("#btnSiguiente");
 const spanPaginaActual = document.querySelector("#paginaActual");
-const btnComposteras = document.querySelector("#composteras");
+const registros = document.querySelector("#Registros");
+const composteras = document.querySelector("#Composteras");
+const bolos = document.querySelector("#Bolos");
 
 cargarComposteras();
+
+
+registros.addEventListener("click",()=> cargarDatos(paginaActual));
+composteras.addEventListener("click",() => generarComposteras());
+bolos.addEventListener("click", () => cargarBolos(paginaActual));
 
 
 
 // Función para cargar datos de una página específica
 async function cargarDatos(pagina) {
     try {
-        const url = `/api/registros?page=${pagina}&per_page=3`;
+        const url = `/api/registros?page=${pagina}&per_page=20`;
         const registros = await consulta(url);
         console.log(registros.meta);
         // Limpiar y actualizar los datos
@@ -26,12 +34,12 @@ async function cargarDatos(pagina) {
                 id: registro.id,
                 user_id: registro.user_id,
                 compostera_id: registro.compostera_id,
-                bolo_id: registro.bolo_id
+                ciclo_id: registro.ciclo_id
             });
         });
 
-        // Actualizar la tabla con los nuevos datos
-        // generarTabla();
+        //Actualizar la tabla con los nuevos datos
+        generarTabla();
 
         // Actualizar botones de paginación y número de página
         manejarBotones(registros.meta);
@@ -44,7 +52,9 @@ async function cargarDatos(pagina) {
 function generarTabla() {
     // Limpiar el contenedor
     contenedor.innerHTML = "";
-
+    btnAnterior.classList.remove("hidden");
+    btnSiguiente.classList.remove("hidden");
+    spanPaginaActual.classList.remove("hidden");
     // Crear un fragmento para construir la tabla
     const fragmento = document.createDocumentFragment();
 
@@ -57,10 +67,10 @@ function generarTabla() {
     const filaCabecera = document.createElement("tr");
     filaCabecera.className = "bg-green-500 text-white font-bold";
 
-    const cabeceras = ["ID Registro", "Username", "ID Compostera", "ID Bolo"];
+    const cabeceras = ["ID Registro", "Username", "Tipo Compostera", "Ciclo"];
     cabeceras.forEach(texto => {
         const th = document.createElement("th");
-        th.className = "border border-gray-300 px-4 py-2 text-left";
+        th.className = "border border-gray-300 px-4 py-2 text-center"; // Centramos cabeceras
         th.textContent = texto;
         filaCabecera.appendChild(th);
     });
@@ -71,9 +81,9 @@ function generarTabla() {
     const cuerpo = document.createElement("tbody");
     datos.forEach(dato => {
         const fila = document.createElement("tr");
-
+        
         const celdaId = document.createElement("td");
-        celdaId.className = "border border-gray-300 px-4 py-2";
+        celdaId.className = "border border-gray-300 px-4 py-2 text-center align-middle"; // Centramos celdas
         const enlace = document.createElement("a");
         enlace.id = dato.id;
         enlace.href = "#";
@@ -84,19 +94,27 @@ function generarTabla() {
         fila.appendChild(celdaId);
 
         const celdaUserId = document.createElement("td");
-        celdaUserId.className = "border border-gray-300 px-4 py-2";
+        celdaUserId.className = "border border-gray-300 px-4 py-2 text-center align-middle"; // Centramos celdas
         celdaUserId.textContent = dato.user_id;
         fila.appendChild(celdaUserId);
 
         const celdaComposteraId = document.createElement("td");
-        celdaComposteraId.className = "border border-gray-300 px-4 py-2";
-        celdaComposteraId.textContent = dato.compostera_id;
+        celdaComposteraId.className = "border border-gray-300 px-4 py-2 text-center align-middle"; // Centramos celdas
+        if(dato.compostera_id == 1 ){
+            celdaComposteraId.textContent = "Aporte";
+        }
+        else if(dato.compostera_id == 2 ){
+            celdaComposteraId.textContent = "Degradación";
+        }
+        else if(dato.compostera_id == 3){
+            celdaComposteraId.textContent = "Maduración";
+        }
         fila.appendChild(celdaComposteraId);
 
-        const celdaBoloId = document.createElement("td");
-        celdaBoloId.className = "border border-gray-300 px-4 py-2";
-        celdaBoloId.textContent = dato.bolo_id;
-        fila.appendChild(celdaBoloId);
+        const celdaCicloId = document.createElement("td");
+        celdaCicloId.className = "border border-gray-300 px-4 py-2 text-center align-middle"; // Centramos celdas
+        celdaCicloId.textContent = dato.ciclo_id;
+        fila.appendChild(celdaCicloId);
 
         cuerpo.appendChild(fila);
     });
@@ -111,8 +129,9 @@ function generarTabla() {
     contenedor.appendChild(fragmento);
 }
 
+
 // Función para manejar los botones "Siguiente" y "Anterior"
-function manejarBotones(meta) {
+export function manejarBotones(meta) {
     btnAnterior.disabled = meta.current_page === 1; // Deshabilitar si está en la primera página
     btnSiguiente.disabled = meta.current_page === meta.last_page; // Deshabilitar si está en la última página
     spanPaginaActual.textContent = meta.current_page; // Actualizar número de página
@@ -131,8 +150,8 @@ btnSiguiente.addEventListener("click", () => {
     cargarDatos(paginaActual);
 });
 
-// Cargar los datos iniciales
-cargarDatos(paginaActual);
+
+
 
 
 export{cargarDatos,generarTabla};
