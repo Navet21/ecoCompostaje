@@ -4,31 +4,41 @@ namespace App\Http\Controllers;
 
 use App\Models\Bolo;
 use App\Models\Ciclo;
-use App\Models\Antes;
-use App\Models\Registro;
-use App\Models\Compostera;
 use Illuminate\Http\Request;
-use Torann\Orion\Orion;
+use Carbon\Carbon;
 
 class AnalisisController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $datos = Antes::join('registros', 'antes.registro_id', '=', 'registros.id')
-            ->join('ciclos', 'registros.ciclo_id', '=', 'ciclos.id')
-            ->join('composteras', 'ciclos.compostera_id', '=', 'composteras.id')
-            ->select(
-                'antes.created_at',
-                'antes.temperaturaAmbiental',
-                'antes.temperaturaCompostera',
-                'ciclos.fecha_inicio',
-                'ciclos.fecha_fin',
-                'composteras.tipo as compostera_nombre'
-            )
-            ->orderBy('antes.created_at')
+
+        $bolos = Bolo::all();
+
+        $boloId = $request->get('bolo_id');
+
+        if (!$boloId) {
+            return view('analisis', ['temperaturas' => [], 'bolos' => $bolos]);
+        }
+
+        $ciclos = Ciclo::where('bolo_id', $boloId)
+            ->with(['registros.antes'])
+            ->orderBy('fecha_inicio')
             ->get();
 
-        // Pasar los datos a la vista
-        return view('analisis', compact('datos'));
+        $temperaturas = [];
+        foreach ($ciclos as $ciclo) {
+            foreach ($ciclo->registros as $registro) {
+                foreach ($registro->antes as $datoAntes) {
+                    $temperaturas[] = [
+                        'fecha' => Carbon::parse($datoAntes->created_at)->format('Y-m-d'),
+                        'temperatura' => $datoAntes->temperaturaCompostera,
+                    ];
+                }
+            }
+        }
+
+        usort($temperaturas, fn($a, $b) => strtotime($a['fecha']) - strtotime($b['fecha']));
+
+        return view('analisis', compact('temperaturas', 'bolos'));
     }
 }
