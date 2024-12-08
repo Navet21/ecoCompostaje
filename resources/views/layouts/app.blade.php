@@ -12,12 +12,12 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- AdminLTE Styles -->
     <link href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}" rel="stylesheet">
 
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/registros.js', 'resources/js/mode.js'])
-    <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
-
+    <!-- Otros estilos -->
+    @vite(['resources/css/app.css'])
 </head>
 
 <body class="font-sans antialiased">
@@ -38,10 +38,24 @@
             {{ $slot }}
         </main>
     </div>
+
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap Bundle -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script> <!-- Chart.js -->
-    <script src="{{ asset('js/adminlte.min.js') }}"></script>
+
+    <!-- AdminLTE -->
+    <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+    <!-- Otros Scripts -->
+    @vite(['resources/js/app.js', 'resources/js/registros.js', 'resources/js/mode.js'])
+
+    <!-- Scripts adicionales específicos de la página -->
+    @stack('scripts')
 </body>
 
 </html>
