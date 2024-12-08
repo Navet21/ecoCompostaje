@@ -15,6 +15,18 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <!-- Análisis -->
+                    <x-nav-link :href="route('analisis')" :active="request()->routeIs('analisis')">
+                        {{ __('Análisis') }}
+                    </x-nav-link>
+
+                    @if (Auth::user()->admin)
+                        <!-- Usuarios -->
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                            {{ __('Usuarios') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -34,14 +46,12 @@
                                 </svg>
                             </div>
                         </button>
-                        <x-boton></x-boton>
                     </x-slot>
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Perfil') }}
                         </x-dropdown-link>
-
 
                         @if (Auth::user()->admin)
                             <x-dropdown-link :href="route('users.index')">
@@ -85,6 +95,16 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('analisis')" :active="request()->routeIs('analisis')">
+                {{ __('Análisis') }}
+            </x-responsive-nav-link>
+
+            @if (Auth::user()->admin)
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                    {{ __('Usuarios') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
