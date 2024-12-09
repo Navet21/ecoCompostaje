@@ -94,7 +94,7 @@ npm run dev
 
 ### Automatización CI/CD
 
-Se ha implementado GitHub Actions para automatizar el despliegue en producción cuando se realiza un merge en la rama `main`.
+Se ha implementado GitHub Actions para automatizar el despliegue en producción cuando se realiza un merge en la rama `produccion`.
 
 ### Badges
 
