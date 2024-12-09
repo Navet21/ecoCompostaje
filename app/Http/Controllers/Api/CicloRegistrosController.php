@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\User;
+use App\Models\Ciclo;
 use Orion\Concerns\DisableAuthorization;
 use Orion\Http\Controllers\RelationController;
 
-class UserRegistrosController extends RelationController
+class CicloRegistrosController extends RelationController
 {
     /**
      * Fully-qualified model class name
      */
-    protected $model = User::class; // or "App\Models\Post"
+    // use DisableAuthorization;
+    protected $model = Ciclo::class; // or "App\Models\Post"
 
     /**
      * Name of the relationship as it is defined on the Post model

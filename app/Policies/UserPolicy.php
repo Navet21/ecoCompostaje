@@ -18,4 +18,17 @@ class UserPolicy
     {
         return $user->admin == '1';
     }
+
+    public function viewAny(User $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function view(User $user, User $model): bool
+    {
+        return true;
+    }
 }

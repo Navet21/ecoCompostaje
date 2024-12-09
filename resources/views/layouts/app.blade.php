@@ -52,7 +52,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
     <!-- Otros Scripts -->
-    @vite(['resources/js/app.js', 'resources/js/registros.js', 'resources/js/mode.js'])
+    @vite(['resources/js/app.js', 'resources/js/registros.js'])
 
     <!-- Scripts adicionales específicos de la página -->
     @stack('scripts')

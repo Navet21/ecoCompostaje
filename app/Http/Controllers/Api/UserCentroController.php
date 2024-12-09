@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
-use Orion\Concerns\DisableAuthorization;
+use App\Policies\UserPolicy;
 use Orion\Http\Controllers\RelationController;
 
-class UserRegistrosController extends RelationController
+class UserCentroController extends RelationController
 {
     /**
      * Fully-qualified model class name
@@ -16,5 +16,7 @@ class UserRegistrosController extends RelationController
     /**
      * Name of the relationship as it is defined on the Post model
      */
-    protected $relation = 'registros';
+    protected $relation = 'centro';
+
+    
 }
