@@ -49,104 +49,92 @@ async function consultarCiclosBolo(e) {
 
 // Función para generar las tablas en el DOM
 function generarTablasCiclos(ciclos) {
-    // Seleccionamos el contenedor donde estarán las tablas
+    // Ocultar botones de paginación y limpiar el contenedor
     btnAnterior.classList.add("hidden");
     btnSiguiente.classList.add("hidden");
     spanPaginaActual.classList.add("hidden");
     const contenedor = document.querySelector("#Datos");
     contenedor.innerHTML = ""; // Limpiar contenido previo
 
-    // Función para crear una tabla
-    function crearTabla(datos, cabeceraTexto) {
-        // Crear un fragmento para optimizar la manipulación del DOM
-        const fragmento = document.createDocumentFragment();
+    // Crear un contenedor para hacer la tabla responsive
+    const tablaWrapper = document.createElement("div");
+    tablaWrapper.className = "overflow-x-auto mt-8 px-4"; // Márgenes laterales y superior añadidos
 
-        // Crear la tabla y configurarla
-        const tabla = document.createElement("table");
-        tabla.style.border = "1px solid black";
-        tabla.style.width = "100%";
-        tabla.style.borderCollapse = "collapse";
-        tabla.style.marginBottom = "20px"; // Espaciado entre tablas
+    // Crear la tabla
+    const tabla = document.createElement("table");
+    tabla.className = "w-full border-collapse border border-gray-300 rounded-lg shadow-lg"; // Bordes redondeados y sombra
 
-        // Crear y agregar cabecera
-        const cabecera = document.createElement("thead");
-        const filaCabecera = document.createElement("tr");
-        cabeceraTexto.forEach((texto) => {
-            const th = document.createElement("th");
-            th.textContent = texto;
-            th.style.border = "1px solid black";
-            th.style.padding = "8px";
-            th.style.backgroundColor = "#28a745"; // Fondo verde
-            th.style.color = "#ffffff"; // Letras blancas
-            th.style.textAlign = "center"; // Centrar texto
-            filaCabecera.appendChild(th);
+    // Crear y agregar cabeceras a la tabla
+    const cabecera = document.createElement("thead");
+    const filaCabecera = document.createElement("tr");
+    filaCabecera.className = "bg-green-500 text-white font-bold"; // Fondo verde claro y texto blanco
+
+    const cabeceras = ["Ciclo ID", "Fecha Inicio", "Fecha Fin", "Terminado", "Tipo Compostera"];
+    cabeceras.forEach((texto) => {
+        const th = document.createElement("th");
+        th.className = "border border-gray-300 px-4 py-2 text-center"; // Centramos cabeceras
+        th.textContent = texto;
+        filaCabecera.appendChild(th);
+    });
+    cabecera.appendChild(filaCabecera);
+    tabla.appendChild(cabecera);
+
+    // Crear cuerpo de la tabla
+    const cuerpo = document.createElement("tbody");
+    ciclos.forEach((registro) => {
+        const fila = document.createElement("tr");
+
+        // Crear celda para ciclo_id con enlace
+        const celdaCicloId = document.createElement("td");
+        celdaCicloId.className = "border border-gray-300 px-4 py-2 text-center align-middle"; // Centramos celdas
+        const enlace = document.createElement("a");
+        enlace.textContent = registro.id;
+        enlace.href = "#";
+        enlace.className = "text-blue-600 hover:underline"; // Enlace azul subrayado al pasar el cursor
+        enlace.addEventListener("click", consultarRegistrosCiclo);
+        celdaCicloId.appendChild(enlace);
+        fila.appendChild(celdaCicloId);
+
+        // Crear las demás celdas
+        const celdas = [
+            registro.fecha_inicio,
+            registro.fecha_fin || "N/A", // Mostrar "N/A" si no hay fecha de fin
+            registro.terminado ? "Sí" : "No",
+        ];
+
+        celdas.forEach((valor) => {
+            const celda = document.createElement("td");
+            celda.className = "border border-gray-300 px-4 py-2 text-center align-middle"; // Centramos celdas
+            celda.textContent = valor;
+            fila.appendChild(celda);
         });
-        cabecera.appendChild(filaCabecera);
-        tabla.appendChild(cabecera);
 
-        // Crear y agregar cuerpo de la tabla
-        const cuerpo = document.createElement("tbody");
-        datos.forEach((dato) => {
-            const fila = document.createElement("tr");
+        // Determinar el tipo de compostera
+        const tipoCompostera = registro.compostera_id === 1
+            ? "Aporte"
+            : registro.compostera_id === 2
+            ? "Degradación"
+            : "Maduración";
 
-            // Iterar por cada propiedad del objeto
-            Object.entries(dato).forEach(([clave, valor]) => {
-                const celda = document.createElement("td");
-                celda.style.border = "1px solid black";
-                celda.style.padding = "8px";
-                celda.style.textAlign = "center"; // Centrar texto
+        const celdaTipoCompostera = document.createElement("td");
+        celdaTipoCompostera.className = "border border-gray-300 px-4 py-2 text-center align-middle"; // Centramos celdas
+        celdaTipoCompostera.textContent = tipoCompostera;
+        fila.appendChild(celdaTipoCompostera);
 
-                if (clave === "ciclo_id") {
-                    // Crear enlace para el ID
-                    const enlace = document.createElement("a");
-                    enlace.textContent = valor;
-                    enlace.href = "#"; // Evitar navegación predeterminada
-                    enlace.style.color = "blue";
-                    enlace.style.textDecoration = "underline";
-                    // Agregar evento al enlace
-                    enlace.addEventListener("click", consultarRegistrosCiclo);
+        cuerpo.appendChild(fila);
+    });
 
-                    celda.appendChild(enlace);
-                } else {
-                    celda.textContent = valor; // Para otros valores, solo texto
-                }
+    // Agregar el cuerpo a la tabla
+    tabla.appendChild(cuerpo);
 
-                fila.appendChild(celda);
-            });
+    // Envolver la tabla en el contenedor responsivo
+    tablaWrapper.appendChild(tabla);
 
-            cuerpo.appendChild(fila);
-        });
-        tabla.appendChild(cuerpo);
-
-        // Agregar la tabla al fragmento
-        fragmento.appendChild(tabla);
-
-        return fragmento;
-    }
-
-    // Función para crear un título antes de cada tabla
-    function crearTitulo(texto) {
-        const titulo = document.createElement("h3");
-        titulo.textContent = texto;
-        titulo.style.margin = "20px 0 10px";
-        titulo.style.fontSize = "1.5rem";
-        titulo.style.color = "#333";
-        return titulo;
-    }
-
-    // Crear y agregar la tabla de 'ciclos'
-    contenedor.appendChild(crearTitulo("Ciclos"));
-    const cabeceraCiclos = ["Ciclo ID", "Fecha Inicio", "Fecha Fin", "Terminado", "Compostera ID"];
-    const datosCiclos = ciclos.map((registro) => ({
-        ciclo_id: registro.id,
-        fecha_inicio: registro.fecha_inicio,
-        fecha_fin: registro.fecha_fin || "N/A", // Mostrar "N/A" si no hay fecha de fin
-        terminado: registro.terminado ? "Sí" : "No",
-        compostera_id: registro.compostera_id,
-    }));
-    const tablaCiclos = crearTabla(datosCiclos, cabeceraCiclos);
-    contenedor.appendChild(tablaCiclos);
+    // Agregar el contenedor responsivo al contenedor principal
+    contenedor.appendChild(tablaWrapper);
 }
+
+
 
 
 

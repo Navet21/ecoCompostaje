@@ -9,8 +9,8 @@ const token = sessionStorage.getItem("token");
 const btnAnterior = document.querySelector("#btnAnterior");
 const btnSiguiente = document.querySelector("#btnSiguiente");
 const spanPaginaActual = document.querySelector("#paginaActual");
-
-
+const user_id = sessionStorage.getItem('idUsuario');
+let centro_id;
 
 console.log(token);
 
@@ -45,26 +45,31 @@ export async function generarComposteras(mensajeExito = null) {
     // Si se pasa el mensaje de éxito, mostrar el alert al principio
     if (mensajeExito) {
         const alerta = document.createElement("div");
-        alerta.className =
-            "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4";
+        alerta.className = "px-4 py-3 rounded relative mb-4 shadow-lg";
+        alerta.style.backgroundColor = "#d1e7dd"; // Equivalente a bg-green-100 en Tailwind
+        alerta.style.border = "1px solid #badbcc"; // Equivalente a border-green-400 en Tailwind
+        alerta.style.color = "#0f5132"; // Equivalente a text-green-700 en Tailwind
+    
         alerta.setAttribute("role", "alert");
-
+    
         const texto = document.createElement("span");
         texto.className = "block sm:inline";
         texto.textContent = mensajeExito;
-
+    
         const botonCerrar = document.createElement("button");
-        botonCerrar.className =
-            "absolute top-0 bottom-0 right-0 px-4 py-3 text-green-700";
-        botonCerrar.innerHTML = "&times;"; // Símbolo de cerrar
+        botonCerrar.className = "absolute top-0 bottom-0 right-0 px-4 py-3 font-bold";
+        botonCerrar.style.color = "#0f5132"; // Color para el botón de cierre
+        botonCerrar.innerHTML = "&times;";
         botonCerrar.addEventListener("click", () => {
-            alerta.remove(); // Eliminar la alerta al hacer clic
+            alerta.remove();
         });
-
+    
         alerta.appendChild(texto);
         alerta.appendChild(botonCerrar);
-        contenedor.appendChild(alerta); // Agregar la alerta al contenedor
+        contenedor.appendChild(alerta);
     }
+    
+    
 
     // Obtener los bolos filtrados
     const datos_bolos = await saberBolos();
@@ -85,32 +90,29 @@ export async function generarComposteras(mensajeExito = null) {
     datosCompostera.forEach((dato) => {
         const card = document.createElement("div");
         card.className =
-            "bg-white shadow-md rounded-lg p-4 border border-gray-300 w-60 flex justify-between items-center";
+            "bg-white shadow-md rounded-lg p-4 border border-gray-300 w-60 flex flex-col items-start";
 
         const compostera_id = dato.id;
+        console.log(compostera_id);
         const estado = dato.ocupada;
 
         const contenido = document.createElement("div");
         const tipo = document.createElement("h2");
-        tipo.className = "text-xl font-bold mb-2";
-        tipo.textContent = `Tipo: ${dato.tipo}`;
+        tipo.className = "text-lg font-bold mb-2";
+        tipo.textContent = dato.tipo
         card.appendChild(tipo);
 
         const estado_compostera = document.createElement("h2");
-        estado_compostera.className = "text-lg font-bold mb-2";
+        estado_compostera.className = "text-sm font-semibold"; // Texto más pequeño
+        estado_compostera.textContent = dato.ocupada ? "Estado: Ocupada" : "Estado: Libre";
+        card.appendChild(estado_compostera);
 
-        // Determinar el estado y asignar el texto
-        if (dato.ocupada) {
-            estado_compostera.textContent = "Estado: Ocupada";
-        } else {
-            estado_compostera.textContent = "Estado: Libre";
-        }
 
         // Añadir el elemento al contenedor
         card.appendChild(estado_compostera);
 
         const centroId = document.createElement("p");
-        centroId.className = "text-gray-700";
+        centroId.className = " text-xs text-gray-700";
         centroId.textContent = `Centro ID: ${dato.centro_id}`;
         card.appendChild(centroId);
 
@@ -123,7 +125,7 @@ export async function generarComposteras(mensajeExito = null) {
         console.log("Longitud de bolo con ciclo 1 terminado: ", bolosCiclo1y2);
         if (compostera_id == 2 && bolosSoloCiclo1.length < 1) {
             boton.disabled = true;
-            boton.classList.add("bg-gray-400", "cursor-not-allowed");
+            boton.classList.add("bg-gray-700", "cursor-not-allowed");
             boton.classList.remove("bg-green-500");
         }
 
@@ -176,7 +178,6 @@ export async function generarComposteras(mensajeExito = null) {
         fragmento.appendChild(card);
         card.appendChild(contenido);
         card.appendChild(boton);
-
         fragmento.appendChild(card);
     });
 
@@ -211,10 +212,29 @@ export async function saberBolos() {
     }
 }
 
+async function conseguirCentro() {
+    const url = `/api/user/${user_id}/centro`;
+    try {
+        const registros = await consulta(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        console.log("Registros obtenidos:", registros);
+        return registros.data.id; // Retorna solo el ID del centro
+    } catch (error) {
+        console.error("Error al obtener el ID del centro:", error.message);
+        return null; // Devuelve null en caso de error
+    }
+}
+
+centro_id = await conseguirCentro();
+
 export async function cargarComposteras(mensajeExito = null) {
     try {
-        
-        const url = `/api/composteras`;
+        const url = `/api/centros/${centro_id}/composteras`;
         const registros = await consulta(url, {
             method: "GET",
             headers: {

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreign('registro_id')->references('id')->on('registros')->onDelete('cascade');
             $table->tinyInteger('temperaturaAmbiental')->index()->nullable();
             $table->tinyInteger('temperaturaCompostera')->index()->nullable();
-            $table->enum('nivelLlenadoInicial',['0','12,5','25','37.5','50','67.5','75','87.5','100'])->nullable();
+            $table->enum('nivelLlenadoInicial',['0','12.5','25','37.5','50','67.5','75','87.5','100'])->nullable();
             $table->enum('olor',['Podrido','Sin olor','Amoníaco'])->nullable();
             $table->enum('insectos',['Si','No'])->nullable();
             $table->enum('humedad',['Exceso','Buena','Defecto'])->nullable();

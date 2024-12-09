@@ -57,26 +57,22 @@ function generarTablasRegistrosCiclo(registros) {
 
     // Función para crear una tabla
     function crearTabla(datos, cabeceraTexto) {
-        // Crear un fragmento para optimizar la manipulación del DOM
-        const fragmento = document.createDocumentFragment();
+        // Crear un contenedor para hacer la tabla responsive
+        const tablaWrapper = document.createElement("div");
+        tablaWrapper.className = "overflow-x-auto mt-8 px-4"; // Márgenes laterales y superior añadidos
 
         // Crear la tabla y configurarla
         const tabla = document.createElement("table");
-        tabla.style.border = "1px solid black";
-        tabla.style.width = "100%";
-        tabla.style.borderCollapse = "collapse";
-        tabla.style.marginBottom = "20px"; // Espaciado entre tablas
+        tabla.className = "w-full border-collapse border border-gray-300";
 
         // Crear y agregar cabecera
         const cabecera = document.createElement("thead");
         const filaCabecera = document.createElement("tr");
+        filaCabecera.className = "bg-green-500 text-white font-bold"; // Fondo verde claro y texto blanco
         cabeceraTexto.forEach((texto) => {
             const th = document.createElement("th");
+            th.className = "border border-gray-300 px-4 py-2 text-center"; // Centramos cabeceras
             th.textContent = texto;
-            th.style.border = "1px solid black";
-            th.style.padding = "8px";
-            th.style.backgroundColor = "#f0f0f0"; // Fondo claro para cabecera
-            th.style.textAlign = "center"; // Centrar texto
             filaCabecera.appendChild(th);
         });
         cabecera.appendChild(filaCabecera);
@@ -86,24 +82,28 @@ function generarTablasRegistrosCiclo(registros) {
         const cuerpo = document.createElement("tbody");
         datos.forEach((dato) => {
             const fila = document.createElement("tr");
+
             Object.entries(dato).forEach(([clave, valor]) => {
                 const celda = document.createElement("td");
-                celda.style.border = "1px solid black";
-                celda.style.padding = "8px";
-                celda.style.textAlign = "center"; // Centrar texto
+                celda.className = "border border-gray-300 px-4 py-2 text-center align-middle"; // Centramos celdas
 
                 if (clave === "id") {
                     // Crear un enlace interactivo para el ID
                     const enlace = document.createElement("a");
                     enlace.textContent = valor;
-                    enlace.href = "#"; // Evitar navegación predeterminada
-                    enlace.style.color = "blue";
-                    enlace.style.textDecoration = "underline";
-
-                    // Agregar evento al enlace
+                    enlace.href = "#";
+                    enlace.className = "text-blue-600 hover:underline";
                     enlace.addEventListener("click", consultarADD);
 
                     celda.appendChild(enlace);
+                } else if (clave === "compostera_id") {
+                    // Lógica para convertir el ID en tipo compostera
+                    let tipoCompostera = "N/A";
+                    if (valor === 1) tipoCompostera = "Aporte";
+                    else if (valor === 2) tipoCompostera = "Degradación";
+                    else if (valor === 3) tipoCompostera = "Maduración";
+
+                    celda.textContent = tipoCompostera;
                 } else {
                     celda.textContent = valor;
                 }
@@ -115,33 +115,32 @@ function generarTablasRegistrosCiclo(registros) {
         });
         tabla.appendChild(cuerpo);
 
-        // Agregar la tabla al fragmento
-        fragmento.appendChild(tabla);
+        // Agregar la tabla al contenedor responsivo
+        tablaWrapper.appendChild(tabla);
 
-        return fragmento;
+        return tablaWrapper;
     }
 
     // Función para crear un título antes de cada tabla
     function crearTitulo(texto) {
         const titulo = document.createElement("h3");
         titulo.textContent = texto;
-        titulo.style.margin = "20px 0 10px";
-        titulo.style.fontSize = "1.5rem";
-        titulo.style.color = "#333";
+        titulo.className = "text-lg font-bold text-gray-700 my-4"; // Estilo similar a Tailwind
         return titulo;
     }
 
     // Crear y agregar la tabla de registros
     contenedor.appendChild(crearTitulo("Registros del Ciclo"));
-    const cabeceraRegistros = ["Registro ID", "User ID", "Compostera ID"];
+    const cabeceraRegistros = ["Registro ID", "User ID", "Tipo Compostera"];
     const datosRegistros = registros.map((registro) => ({
         id: registro.id,
         user_id: registro.user_id,
-        compostera_id: registro.compostera_id,
+        compostera_id: registro.compostera_id, // Este se procesará en la lógica de la tabla
     }));
     const tablaRegistros = crearTabla(datosRegistros, cabeceraRegistros);
     contenedor.appendChild(tablaRegistros);
 }
+
 
 
 
