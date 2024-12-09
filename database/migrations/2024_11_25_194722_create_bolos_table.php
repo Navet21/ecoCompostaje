@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->timestamps();
-            $table->tinyText('datos_relevantes');
+            $table->tinyText('datos_relevantes')->nullable();
             $table->boolean('terminado')->default(0);
             $table->boolean('ciclo1')->default(0);
             $table->boolean('ciclo2')->default(0);

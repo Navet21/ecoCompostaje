@@ -55,20 +55,25 @@ function generarTabla() {
     btnAnterior.classList.remove("hidden");
     btnSiguiente.classList.remove("hidden");
     spanPaginaActual.classList.remove("hidden");
+
+    // Crear un contenedor para hacer la tabla responsive
+    const tablaWrapper = document.createElement("div");
+    tablaWrapper.className = "overflow-x-auto mt-8 px-4"; // Márgenes laterales y superior
+
     // Crear un fragmento para construir la tabla
     const fragmento = document.createDocumentFragment();
 
     // Crear la tabla
     const tabla = document.createElement("table");
-    tabla.className = "w-full border-collapse border border-gray-300";
+    tabla.className = "w-full border-collapse border border-gray-300 rounded-lg shadow-lg"; // Bordes redondeados y sombra
 
     // Crear y agregar cabeceras a la tabla
     const cabecera = document.createElement("thead");
     const filaCabecera = document.createElement("tr");
-    filaCabecera.className = "bg-green-500 text-white font-bold";
+    filaCabecera.className = "bg-green-500 text-white font-bold"; // Fondo verde claro y texto blanco
 
     const cabeceras = ["ID Registro", "Username", "Tipo Compostera", "Ciclo"];
-    cabeceras.forEach(texto => {
+    cabeceras.forEach((texto) => {
         const th = document.createElement("th");
         th.className = "border border-gray-300 px-4 py-2 text-center"; // Centramos cabeceras
         th.textContent = texto;
@@ -79,9 +84,9 @@ function generarTabla() {
 
     // Crear cuerpo de la tabla
     const cuerpo = document.createElement("tbody");
-    datos.forEach(dato => {
+    datos.forEach((dato) => {
         const fila = document.createElement("tr");
-        
+
         const celdaId = document.createElement("td");
         celdaId.className = "border border-gray-300 px-4 py-2 text-center align-middle"; // Centramos celdas
         const enlace = document.createElement("a");
@@ -100,15 +105,12 @@ function generarTabla() {
 
         const celdaComposteraId = document.createElement("td");
         celdaComposteraId.className = "border border-gray-300 px-4 py-2 text-center align-middle"; // Centramos celdas
-        if(dato.compostera_id == 1 ){
-            celdaComposteraId.textContent = "Aporte";
-        }
-        else if(dato.compostera_id == 2 ){
-            celdaComposteraId.textContent = "Degradación";
-        }
-        else if(dato.compostera_id == 3){
-            celdaComposteraId.textContent = "Maduración";
-        }
+        celdaComposteraId.textContent =
+            dato.compostera_id === 1
+                ? "Aporte"
+                : dato.compostera_id === 2
+                ? "Degradación"
+                : "Maduración";
         fila.appendChild(celdaComposteraId);
 
         const celdaCicloId = document.createElement("td");
@@ -122,12 +124,21 @@ function generarTabla() {
     // Agregar el cuerpo a la tabla
     tabla.appendChild(cuerpo);
 
-    // Agregar la tabla al fragmento
-    fragmento.appendChild(tabla);
+    // Envolver la tabla en el contenedor responsivo
+    tablaWrapper.appendChild(tabla);
+
+    // Agregar el contenedor responsivo al fragmento
+    fragmento.appendChild(tablaWrapper);
 
     // Agregar el fragmento al contenedor
     contenedor.appendChild(fragmento);
 }
+
+
+
+
+
+
 
 
 // Función para manejar los botones "Siguiente" y "Anterior"
