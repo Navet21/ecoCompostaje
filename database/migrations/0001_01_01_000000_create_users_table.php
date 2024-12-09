@@ -20,7 +20,6 @@ return new class extends Migration
             $table->boolean('admin')->default(0);
             $table->rememberToken();
             $table->timestamps();
-            $table->unsignedBigInteger('id_centros')->nullable();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ComposterasController;
 use App\Http\Controllers\Api\CicloComposteraController;
 use App\Http\Controllers\Api\ComposteraCiclosController;
+use App\Http\Controllers\Api\UserCentroController;
 use Illuminate\Support\Facades\Route;
 use Orion\Facades\Orion;
 use App\Http\Controllers\Api\CentrosController;
@@ -56,6 +57,7 @@ Route::group(['as' => 'api.'], function() {
     Orion::belongsToResource('ciclo','composteras',CicloComposteraController::class);
     Orion::hasManyResource('compostera','ciclos',ComposteraCiclosController::class);
     Orion::hasManyResource('ciclo','registros',CicloRegistrosController::class);
+    Orion::belongsToResource('user','centro',UserCentroController::class);
 })->middleware('auth:sanctum');
 
 //Obtener ultimo registro
