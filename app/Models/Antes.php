@@ -24,6 +24,6 @@ class Antes extends Model
 
     public function registro()
     {
-        return $this->belongsTo(Registro::class, 'registro_id');
+        return $this->belongsTo(Ciclo::class, 'registro_id', 'registro_id');
     }
 }

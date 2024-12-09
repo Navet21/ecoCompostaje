@@ -26,7 +26,7 @@ class DuranteFactory extends Factory
             'tipo_aporte_verde' => fake()->text(fake()->numberBetween(5, 200)),
             'aporte_seco' => fake()->numberBetween(1, 999),
             'tipo_aporte_seco' => fake()->text(fake()->numberBetween(5, 200)),
-            'observaciones' => fake()->numberBetween(50, 200)
+            'observacion' => fake()->numberBetween(50, 200)
         ];
     }
 }

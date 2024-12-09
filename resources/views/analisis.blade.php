@@ -1,106 +1,87 @@
-<!DOCTYPE html>
-<html lang="es">
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="text-lg text-gray-800 dark:text-gray-200 leading-tight font-normal">
+            {{ __('Análisis de Temperaturas') }}
+        </h2>
+    </x-slot>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gráficas de Temperaturas</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Formulario para seleccionar el bolo -->
+            <form method="GET" action="{{ route('analisis') }}">
+                <div>
+                    <label for="bolo_id" class="block text-sm font-medium text-gray-700">Selecciona el Bolo</label>
+                    <select name="bolo_id" id="bolo_id" onchange="this.form.submit()" class="mt-1 block w-full">
+                        <option value="" {{ request('bolo_id') == null ? 'selected' : '' }}>-- Selecciona un bolo
+                            --</option>
+                        @foreach ($bolos as $bolo)
+                            <option value="{{ $bolo->id }}" {{ request('bolo_id') == $bolo->id ? 'selected' : '' }}>
+                                {{ $bolo->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </form>
 
-<body>
-    <div style="width: 80%; margin: 0 auto;">
-        <canvas id="graficaTemperaturas"></canvas>
+
+            <!-- Gráfico -->
+            @if (count($temperaturas) > 0)
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mt-4">
+                    <canvas id="graficaTemperaturas"></canvas>
+                </div>
+            @else
+                <p class="mt-4 text-gray-500">Por favor, selecciona un bolo para ver la gráfica.</p>
+            @endif
+
+        </div>
     </div>
 
-    <script>
-        // Obtener los datos desde el servidor (Laravel)
-        const datos = @json($datos);
+    @push('scripts')
+        @if (count($temperaturas) > 0)
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    // Datos desde el servidor
+                    const temperaturas = @json($temperaturas);
 
-        // Extraer las fechas, temperaturas y ciclos
-        const fechas = datos.map(item => item.fecha);
-        const temperaturaAmbiental = datos.map(item => item.temperaturaAmbiental);
-        const temperaturaCompostera = datos.map(item => item.temperaturaCompostera);
-        const ciclos = datos.map(item => ({
-            inicio: item.fecha_inicio,
-            fin: item.fecha_fin
-        }));
+                    // Fechas y temperaturas
+                    const fechas = temperaturas.map(item => item.fecha);
+                    const dataTemperaturas = temperaturas.map(item => item.temperatura);
 
-        // Crear la gráfica
-        const ctx = document.getElementById('graficaTemperaturas').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: fechas,
-                datasets: [{
-                        label: 'Temperatura Ambiental',
-                        data: temperaturaAmbiental,
-                        borderColor: 'blue',
-                        backgroundColor: 'rgba(0, 0, 255, 0.2)',
-                        fill: false,
-                    },
-                    {
-                        label: 'Temperatura Compostera',
-                        data: temperaturaCompostera,
-                        borderColor: 'red',
-                        backgroundColor: 'rgba(255, 0, 0, 0.2)',
-                        fill: false,
-                    },
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Temperaturas a lo largo de los ciclos de compostera'
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                },
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'day',
-                            tooltipFormat: 'll',
+                    // Configuración de Chart.js
+                    const ctx = document.getElementById('graficaTemperaturas').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: fechas,
+                            datasets: [{
+                                label: 'Temperatura Compostera',
+                                data: dataTemperaturas,
+                                borderColor: 'rgb(75, 192, 192)',
+                                tension: 0.1,
+                                borderWidth: 2,
+                            }]
                         },
-                        title: {
-                            display: true,
-                            text: 'Fecha',
-                        },
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Temperatura (°C)',
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Fecha'
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Temperatura (°C)'
+                                    },
+                                    min: 0
+                                }
+                            }
                         }
-                    }
-                }
-            }
-        });
-
-        // Resaltar los ciclos en el gráfico
-        ciclos.forEach(ciclo => {
-            const inicio = new Date(ciclo.inicio);
-            const fin = new Date(ciclo.fin);
-
-            // Agregar un área sombreada para representar el ciclo
-            chart.data.datasets.push({
-                label: 'Ciclo Compostera',
-                data: [inicio, fin],
-                borderColor: 'green',
-                backgroundColor: 'rgba(0, 255, 0, 0.2)',
-                fill: true,
-                borderWidth: 0,
-            });
-
-            // Actualizar el gráfico
-            chart.update();
-        });
-    </script>
-</body>
-
-</html>
+                    });
+                });
+            </script>
+        @endif
+    @endpush
+</x-app-layout>
