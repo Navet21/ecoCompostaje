@@ -3,13 +3,13 @@ import {
     generarFormularioAntes,
 } from "/resources/js/formulario";
 
-let datosCompostera =[];
+let datosCompostera = [];
 const contenedor = document.querySelector("#Datos");
 const token = sessionStorage.getItem("token");
 const btnAnterior = document.querySelector("#btnAnterior");
 const btnSiguiente = document.querySelector("#btnSiguiente");
 const spanPaginaActual = document.querySelector("#paginaActual");
-const user_id = sessionStorage.getItem('idUsuario');
+const user_id = sessionStorage.getItem("idUsuario");
 let centro_id;
 
 console.log(token);
@@ -20,7 +20,7 @@ export async function consulta(url) {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
         },
     });
     if (!response.ok) {
@@ -31,8 +31,6 @@ export async function consulta(url) {
     }
     return await response.json();
 }
-
-
 
 // Función para cargar datos de una página específica
 export async function generarComposteras(mensajeExito = null) {
@@ -49,37 +47,38 @@ export async function generarComposteras(mensajeExito = null) {
         alerta.style.backgroundColor = "#d1e7dd"; // Equivalente a bg-green-100 en Tailwind
         alerta.style.border = "1px solid #badbcc"; // Equivalente a border-green-400 en Tailwind
         alerta.style.color = "#0f5132"; // Equivalente a text-green-700 en Tailwind
-    
+
         alerta.setAttribute("role", "alert");
-    
+
         const texto = document.createElement("span");
         texto.className = "block sm:inline";
         texto.textContent = mensajeExito;
-    
+
         const botonCerrar = document.createElement("button");
-        botonCerrar.className = "absolute top-0 bottom-0 right-0 px-4 py-3 font-bold";
+        botonCerrar.className =
+            "absolute top-0 bottom-0 right-0 px-4 py-3 font-bold";
         botonCerrar.style.color = "#0f5132"; // Color para el botón de cierre
         botonCerrar.innerHTML = "&times;";
         botonCerrar.addEventListener("click", () => {
             alerta.remove();
         });
-    
+
         alerta.appendChild(texto);
         alerta.appendChild(botonCerrar);
         contenedor.appendChild(alerta);
     }
-    
-    
 
     // Obtener los bolos filtrados
     const datos_bolos = await saberBolos();
     console.log(datos_bolos);
-    const bolosCiclo1y2 = datos_bolos.filter((bolo) => {;
+    const bolosCiclo1y2 = datos_bolos.filter((bolo) => {
         return bolo.ciclo1 == true && bolo.ciclo2 == true;
     });
-    console.log("eeeo",bolosCiclo1y2);
+    console.log("eeeo", bolosCiclo1y2);
     const bolosSoloCiclo1 = datos_bolos.filter((bolo) => {
-        return bolo.ciclo1 == true && bolo.ciclo2 != true && bolo.ciclo3 != true;
+        return (
+            bolo.ciclo1 == true && bolo.ciclo2 != true && bolo.ciclo3 != true
+        );
     });
     console.log("eeeeeeeo", bolosSoloCiclo1);
 
@@ -99,14 +98,15 @@ export async function generarComposteras(mensajeExito = null) {
         const contenido = document.createElement("div");
         const tipo = document.createElement("h2");
         tipo.className = "text-lg font-bold mb-2";
-        tipo.textContent = dato.tipo
+        tipo.textContent = dato.tipo;
         card.appendChild(tipo);
 
         const estado_compostera = document.createElement("h2");
         estado_compostera.className = "text-sm font-semibold"; // Texto más pequeño
-        estado_compostera.textContent = dato.ocupada ? "Estado: Ocupada" : "Estado: Libre";
+        estado_compostera.textContent = dato.ocupada
+            ? "Estado: Ocupada"
+            : "Estado: Libre";
         card.appendChild(estado_compostera);
-
 
         // Añadir el elemento al contenedor
         card.appendChild(estado_compostera);
@@ -132,7 +132,7 @@ export async function generarComposteras(mensajeExito = null) {
         if (compostera_id === 3 && bolosCiclo1y2.length == 0) {
             boton.disabled = true;
             boton.classList.add("bg-gray-400", "cursor-not-allowed");
-            boton.classList.remove("bg-green-500");;
+            boton.classList.remove("bg-green-500");
         }
 
         boton.addEventListener("click", () => {
@@ -184,7 +184,6 @@ export async function generarComposteras(mensajeExito = null) {
     // Agregar el fragmento al contenedor
     contenedor.appendChild(fragmento);
 }
-
 
 export async function saberBolos() {
     try {
@@ -254,16 +253,12 @@ export async function cargarComposteras(mensajeExito = null) {
         });
 
         // Actualizar la tabla con los nuevos datos
-        if(mensajeExito){
+        if (mensajeExito) {
             generarComposteras(mensajeExito);
-        }
-        else {
+        } else {
             generarComposteras();
         }
-        
     } catch (error) {
         console.error("Error al cargar datos:", error.message);
     }
 }
-
-
