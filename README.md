@@ -1,5 +1,8 @@
 
 # ecoCompostaje
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![PHP Version](https://img.shields.io/badge/PHP-8.3-blue)
+![Laravel Version](https://img.shields.io/badge/Laravel-11-orange)
 
 ## Introducción
 
@@ -9,8 +12,8 @@ ecoCompostaje es una aplicación web para la gestión del ciclo de compostaje en
 
 - **Framework**: Laravel 11
 - **Lenguaje de programación**: PHP 8.3
-- **Base de datos**: MariaDB
-- **Front-end**: JavaScript con Chart.js y AdminLTE
+- **Base de datos**: MySQL
+- **Front-end**: JavaScript, Chart.js y AdminLTE
 - **Estilos**: Tailwind CSS
 - **Gestión de dependencias**: Composer y NPM
 
@@ -61,8 +64,8 @@ npm run dev
 ### Funcionalidades mínimas
 
 - Inicio de sesión para usuarios registrados.
-- Gestión de usuarios a través de un CRUD en el dashboard.
-- Creación, edición y visualización de registros de composteras.
+- Gestión de usuarios por el admin a través de un CRUD en el dashboard.
+- Creación y visualización de registros de composteras.
 - Gráficas de temperatura para cada bolo.
 
 ### Funcionalidades técnicas implementadas
@@ -74,12 +77,11 @@ npm run dev
 - Recursos compilados con Vite.
 - Autorización en la API mediante policies.
 - Búsqueda y filtrado con Laravel Orion.
-- Respuestas con códigos HTTP específicos.
 
 ### Funcionalidades adicionales
 
-- Gráficas avanzadas utilizando Chart.js.
-- Visualización SPA con AdminLTE.
+- Gráficas avanzadas utilizando Chart.js y AdminLTE.
+- Visualización SPA con JavaScript y Tailwind.
 
 ## Despliegue
 
@@ -94,21 +96,17 @@ npm run dev
 
 ### Automatización CI/CD
 
-Se ha implementado GitHub Actions para automatizar el despliegue en producción cuando se realiza un merge en la rama `produccion`.
-
-### Badges
-
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![PHP Version](https://img.shields.io/badge/PHP-8.3-blue)
-![Laravel Version](https://img.shields.io/badge/Laravel-11-orange)
+Se ha implementado GitHub Actions para automatizar el despliegue en producción cuando se realiza un merge en la rama `production`.
 
 ## Acceso al Proyecto
 
 - **Repositorio**: [ecoCompostaje en GitHub](https://github.com/Navet21/ecoCompostaje)
-- **Despliegue**: [URL del proyecto desplegado](https://example.com)
+- **Despliegue**: [URL del proyecto desplegado](https://pablo.informaticamajada.es/login)
+   - Usuario admin: admin@administrador.es
+   - Contraseña: 1234
 
 ## Créditos
 
-Este proyecto fue desarrollado por el equipo de desarrollo (Pablo y Miriam) para la gestión de composteras en entornos educativos.
+Este proyecto fue desarrollado por el equipo de desarrollo (Pablo Santana Suárez y Miriam Guerra Guerra) para la gestión de composteras en entornos educativos.
 
 
