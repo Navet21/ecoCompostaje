@@ -1,7 +1,5 @@
 
 # ecoCompostaje
-### Badges
-
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![PHP Version](https://img.shields.io/badge/PHP-8.3-blue)
 ![Laravel Version](https://img.shields.io/badge/Laravel-11-orange)
@@ -103,7 +101,7 @@ Se ha implementado GitHub Actions para automatizar el despliegue en producción 
 ## Acceso al Proyecto
 
 - **Repositorio**: [ecoCompostaje en GitHub](https://github.com/Navet21/ecoCompostaje)
-- **Despliegue**: [URL del proyecto desplegado](pablo.informaticamajada.es)
+- **Despliegue**: [URL del proyecto desplegado](https://pablo.informaticamajada.es/login)
    - Usuario admin: admin@administrador.es
    - Contraseña: 1234
 
