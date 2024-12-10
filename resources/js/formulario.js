@@ -1166,8 +1166,3 @@ async function cerrarCiclo(ciclo_id,estado_ciclo) {
         throw error; // Lanza el error para que pueda ser manejado en otro lugar si es necesario
     }
 }
-
-
-
-
-
