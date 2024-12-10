@@ -13,10 +13,7 @@
         @csrf
     </form>
 
-
-    <form method="post" action="{{ route('profile.update') }}" id="updateImage" enctype="multipart/form-data"
-        class="mt-6 space-y-6">
-
+    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="mt-6 space-y-6">
         @csrf
         @method('patch')
 
@@ -53,20 +50,22 @@
             @endif
         </div>
 
-
         <div>
             <x-input-label for="image" :value="__('Foto de perfil')" />
+            @if ($user->image)
+                <img src="{{ Storage::url($user->image) }}" alt="{{ __('Foto de perfil') }}"
+                    class="w-16 h-16 rounded-full mb-2">
+            @endif
             <x-text-input id="image" name="image" type="file" class="mt-1 block w-full" />
             <x-input-error class="mt-2" :messages="$errors->get('image')" />
         </div>
-
 
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Guardar') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
                 <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400">{{ __('Guardar.') }}</p>
+                    class="text-sm text-gray-600 dark:text-gray-400">{{ __('Guardado correctamente.') }}</p>
             @endif
         </div>
     </form>
