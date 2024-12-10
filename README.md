@@ -1,72 +1,114 @@
-Nada mas clonar el repositorio:
-composer install/require
+
+# ecoCompostaje
+
+## Introducción
+
+ecoCompostaje es una aplicación web para la gestión del ciclo de compostaje en centros educativos. Esta herramienta permite gestionar usuarios, realizar registros sobre el estado de las composteras y visualizar gráficas relacionadas con los datos registrados. 
+
+## Tecnologías Utilizadas
+
+- **Framework**: Laravel 11
+- **Lenguaje de programación**: PHP 8.3
+- **Base de datos**: MariaDB
+- **Front-end**: JavaScript con Chart.js y AdminLTE
+- **Estilos**: Tailwind CSS
+- **Gestión de dependencias**: Composer y NPM
+
+## Instalación y Configuración
+
+### Clonar el repositorio
+
+```bash
+git clone https://github.com/Navet21/ecoCompostaje.git
+cd ecoCompostaje
+```
+
+### Instalar dependencias
+
+```bash
+composer install
 npm install
-php artisan key:generate
-php artisan migrate
+```
 
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+### Configurar el entorno
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+1. Copia el archivo `.env.example` y renómbralo a `.env`:
+   ```bash
+   cp .env.example .env
+   ```
 
-## About Laravel
+2. Genera una clave de aplicación:
+   ```bash
+   php artisan key:generate
+   ```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+3. Configura las credenciales de la base de datos en el archivo `.env`.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+4. Realiza las migraciones y seeders para la base de datos:
+   ```bash
+   php artisan migrate --seed
+   ```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Ejecutar el servidor de desarrollo
 
-## Learning Laravel
+```bash
+php artisan serve
+npm run dev
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Funcionalidades
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Funcionalidades mínimas
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Inicio de sesión para usuarios registrados.
+- Gestión de usuarios a través de un CRUD en el dashboard.
+- Creación, edición y visualización de registros de composteras.
+- Gráficas de temperatura para cada bolo.
 
-## Laravel Sponsors
+### Funcionalidades técnicas implementadas
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Uso de seeders y factories para la generación de datos.
+- Rutas protegidas con middleware `auth`.
+- Autenticación mediante Sanctum con Personal Access Token.
+- Validación de datos en el servidor.
+- Recursos compilados con Vite.
+- Autorización en la API mediante policies.
+- Búsqueda y filtrado con Laravel Orion.
+- Respuestas con códigos HTTP específicos.
 
-### Premium Partners
+### Funcionalidades adicionales
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- Gráficas avanzadas utilizando Chart.js.
+- Visualización SPA con AdminLTE.
 
-## Contributing
+## Despliegue
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Configuración del servidor
 
-## Code of Conduct
+1. Asegúrate de que el servidor tenga las siguientes configuraciones:
+   - HTTPS habilitado.
+   - Variables de entorno configuradas adecuadamente.
+   - `OpCache` habilitado para mejorar el rendimiento.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. Configura el archivo `.env` en el servidor de producción.
 
-## Security Vulnerabilities
+### Automatización CI/CD
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Se ha implementado GitHub Actions para automatizar el despliegue en producción cuando se realiza un merge en la rama `produccion`.
 
-## License
+### Badges
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![PHP Version](https://img.shields.io/badge/PHP-8.3-blue)
+![Laravel Version](https://img.shields.io/badge/Laravel-11-orange)
+
+## Acceso al Proyecto
+
+- **Repositorio**: [ecoCompostaje en GitHub](https://github.com/Navet21/ecoCompostaje)
+- **Despliegue**: [URL del proyecto desplegado](https://example.com)
+
+## Créditos
+
+Este proyecto fue desarrollado por el equipo de desarrollo (Pablo y Miriam) para la gestión de composteras en entornos educativos.
+
+
