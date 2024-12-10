@@ -205,12 +205,12 @@ export function generarFormularioAntes(compostera_seleccionada) {
 
     // Crear los campos del formulario según las especificaciones
     const campos = [
-        { label: "Temperatura Ambiental:", type: "number", name: "temperaturaAmbiental" },
-        { label: "Temperatura Compostera:", type: "number", name: "temperaturaCompostera" },
-        { label: "Nivel Llenado Inicial:", type: "select", name: "nivelLlenadoInicial", options: ['0', '12.5', '25', '37.5', '50', '67.5', '75', '87.5', '100'] },
-        { label: "Olor:", type: "select", name: "olor", options: ["Podrido", "Sin olor", "Amoníaco"] },
-        { label: "Insectos:", type: "select", name: "insectos", options: ["Sí", "No"] },
-        { label: "Humedad:", type: "select", name: "humedad", options: ["Exceso", "Buena", "Defecto"] },
+        { label: "Temperatura Ambiental(ºC):", type: "number", name: "temperaturaAmbiental" },
+        { label: "Temperatura Compostera(ºC):", type: "number", name: "temperaturaCompostera" },
+        { label: "Nivel Llenado Inicial(L):", type: "select", name: "nivelLlenadoInicial", options: ['0', '12.5', '25', '37.5', '50', '67.5', '75', '87.5', '100'] },
+        { label: "Olor:", type: "select", name: "olor", options: ["No registrado","Podrido", "Sin olor", "Amoníaco"] },
+        { label: "Insectos:", type: "select", name: "insectos", options: ["No registrado","Sí", "No"] },
+        { label: "Humedad:", type: "select", name: "humedad", options: ["No registrado","Exceso", "Buena", "Defecto"] },
         { label: "Observación:", type: "textarea", name: "observacion" }
     ];
 
@@ -351,9 +351,9 @@ export function generarFormularioAntes(compostera_seleccionada) {
             temperaturaAmbiental: parseInt(inputs.temperaturaAmbiental.value),
             temperaturaCompostera: parseInt(inputs.temperaturaCompostera.value),
             nivelLlenadoInicial: inputs.nivelLlenadoInicial.value,
-            olor: inputs.olor.value,
-            insectos: inputs.insectos.value,
-            humedad: inputs.humedad.value,
+            olor: inputs.olor.value === "No registrado" ? null : inputs.olor.value, 
+            insectos: inputs.insectos.value === "No registrado" ? null : inputs.insectos.value,
+            humedad: inputs.humedad.value === "No registrado" ? null : inputs.humedad.value,
             observacion: inputs.observacion.value
         };
         console.log(datosFormularioAntes);
@@ -409,11 +409,11 @@ function generarFormularioDurante(compostera_seleccionada) {
 
     // Crear los campos del formulario según las especificaciones
     const campos = [
-        { label: "¿Riego?:", type: "select", name: "riego", options: ["Sí", "No"] },
-        { label: "¿Revolver?:", type: "select", name: "revolver", options: ["Sí", "No"] },
-        { label: "Aporte Verde:", type: "number", name: "aporte_verde" },
+        { label: "¿Riego?:", type: "select", name: "riego", options: ["No registrado","Sí", "No"] },
+        { label: "¿Revolver?:", type: "select", name: "revolver", options: ["No registrado","Sí","No"] },
+        { label: "Aporte Verde(L):", type: "number", name: "aporte_verde" },
         { label: "Tipo de Aporte Verde:", type: "text", name: "tipo_aporte_verde" },
-        { label: "Aporte Seco:", type: "number", name: "aporte_seco" },
+        { label: "Aporte Seco(L):", type: "number", name: "aporte_seco" },
         { label: "Tipo de Aporte Seco:", type: "text", name: "tipo_aporte_seco" },
         { label: "Observación:", type: "textarea", name: "observacion" }
     ];
@@ -539,8 +539,8 @@ function generarFormularioDurante(compostera_seleccionada) {
         let aporte_seco = parseInt(inputs.aporte_seco.value);
         let aporte_verde = parseInt(inputs.aporte_verde.value);
         datosFormularioDurante = {
-            riego: inputs.riego.value,
-            revolver: inputs.revolver.value,
+            riego: "No registrado" ? null : inputs.riego.value,
+            revolver:"No registrado" ? null : inputs.revolver.value,
             aporte_verde: aporte_verde || null,
             tipo_aporte_verde: inputs.tipo_aporte_verde.value,
             aporte_seco: aporte_seco || null,
@@ -598,10 +598,10 @@ function generarFormularioDespues(compostera_seleccionada) {
     // Crear los campos del formulario según las especificaciones
     const campos = [
         {
-            label: "Nivel de Llenado Final:",
+            label: "Nivel de Llenado Final(L):",
             type: "select",
             name: "nivelLlenadoFinal",
-            options: ["0", "12.5", "25","37.5","50","67.5","75","87.5","100"]
+            options: ["No registrado","0", "12.5", "25","37.5","50","67.5","75","87.5","100"]
         },
         { label: "Observación:", type: "textarea", name: "observacion" },
         {
@@ -734,7 +734,7 @@ function generarFormularioDespues(compostera_seleccionada) {
     );
     botonEnviar.addEventListener("click", function () {
         datosFormularioDespues = {
-            nivelLlenadoFinal: inputs.nivelLlenadoFinal.value,
+            nivelLlenadoFinal: "No registrado" ? null : inputs.nivelLlenadoFinal.value,
             observacion: inputs.observacion.value
         };
         const terminaCiclo = inputs["terminaCiclo"].checked;
