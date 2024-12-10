@@ -18,7 +18,10 @@ class ComposteraFactory extends Factory
      */
     public function definition(): array
     {
+        $ids = [1, 2, 3];
+        $id = array_shift($ids);
         return [
+            'id' => $id,
             'url' => fake()->uuid(),
             'tipo' => fake()->randomElement(['aporte', 'degradacion', 'maduracion']),
             'centro_id' => \App\Models\Centro::all()->random()->id,
