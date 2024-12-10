@@ -19,9 +19,6 @@ export function generarFormularioBolo(compostera_seleccionada) {
     if (compostera_id == 1) {
         console.log(compostera_id);
         contenedor.innerHTML = "";
-<<<<<<< HEAD
-        
-=======
 
         // Contenedor del formulario
         const formularioWrapper = document.createElement("div");
@@ -40,7 +37,6 @@ export function generarFormularioBolo(compostera_seleccionada) {
         formularioWrapper.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.2)";
 
         // Label y input para el nombre del bolo
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
         const labelNombreBolo = document.createElement("label");
         labelNombreBolo.textContent = "Nombre del bolo:";
         labelNombreBolo.classList.add(
@@ -75,15 +71,12 @@ export function generarFormularioBolo(compostera_seleccionada) {
         );
         formularioWrapper.appendChild(inputNombreBolo);
 
-<<<<<<< HEAD
-=======
         // Espaciado entre el input del nombre y el siguiente label
         const spacer = document.createElement("div");
         spacer.classList.add("mt-4"); // Espaciado adicional
         formularioWrapper.appendChild(spacer);
 
         // Label y textarea para la descripción del bolo
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
         const labelDescripcionBolo = document.createElement("label");
         labelDescripcionBolo.textContent = "Descripción del bolo:";
         labelDescripcionBolo.classList.add(
@@ -96,16 +89,12 @@ export function generarFormularioBolo(compostera_seleccionada) {
         formularioWrapper.appendChild(labelDescripcionBolo);
 
         const inputDescripcionBolo = document.createElement("textarea");
-<<<<<<< HEAD
-        inputDescripcionBolo.placeholder = "Descripción del bolo";
-=======
         if(Object.keys(datosBolo).length > 0){
             inputDescripcionBolo.value = datosBolo.datos_relevantes;
         }
         else{
             inputDescripcionBolo.placeholder = "Descripción del bolo";
         }
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
         inputDescripcionBolo.classList.add(
             "shadow",
             "appearance-none",
@@ -119,11 +108,7 @@ export function generarFormularioBolo(compostera_seleccionada) {
             "focus:outline-none",
             "focus:shadow-outline"
         );
-<<<<<<< HEAD
-        contenedor.appendChild(inputDescripcionBolo);
-=======
         formularioWrapper.appendChild(inputDescripcionBolo);
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
 
         // Contenedor para los botones
         const botonesWrapper = document.createElement("div");
@@ -162,16 +147,9 @@ export function generarFormularioBolo(compostera_seleccionada) {
             "rounded",
             "focus:outline-none",
             "focus:shadow-outline",
-            "mt-4"
+            "border",
+            "border-green-600"
         );
-<<<<<<< HEAD
-        contenedor.appendChild(botonSiguiente);
-
-        botonSiguiente.addEventListener("click", () => {
-            datosBolo = {
-                nombre: document.querySelector("input[placeholder='Nombre del bolo']").value,
-                datos_relevantes: document.querySelector("textarea[placeholder='Descripción del bolo']").value
-=======
         botonesWrapper.appendChild(botonSiguiente);
 
         // Añadimos los botones al formulario
@@ -185,36 +163,25 @@ export function generarFormularioBolo(compostera_seleccionada) {
             datosBolo = {
                 nombre: inputNombreBolo.value,
                 datos_relevantes: inputDescripcionBolo.value,
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
             };
             console.log(datosBolo);
             generarFormularioAntes(compostera_id);
         });
-<<<<<<< HEAD
-=======
         botonAtras.addEventListener("click",() => {
             generarComposteras();
         })
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
     }
 }
 
 
-<<<<<<< HEAD
-export function generarFormularioAntes(compostera_seleccionada) {
-    compostera_id = compostera_seleccionada;
-=======
 
 export function generarFormularioAntes(compostera_seleccionada) {
     compostera_id = compostera_seleccionada;
 
     // Seleccionamos el contenedor donde estará el formulario
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
     const contenedor = document.querySelector("#Datos");
-    contenedor.innerHTML = "";
+    contenedor.innerHTML = ""; // Limpiar contenido previo
 
-<<<<<<< HEAD
-=======
     // Crear un contenedor para el formulario
     const formularioWrapper = document.createElement("div");
     formularioWrapper.classList.add(
@@ -234,10 +201,9 @@ export function generarFormularioAntes(compostera_seleccionada) {
     formularioWrapper.appendChild(tituloFormulario);
 
     // Crear el formulario
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
     const formulario = document.createElement("form");
-    formulario.classList.add("space-y-4");
 
+    // Crear los campos del formulario según las especificaciones
     const campos = [
         { label: "Temperatura Ambiental(ºC):", type: "number", name: "temperaturaAmbiental" },
         { label: "Temperatura Compostera(ºC):", type: "number", name: "temperaturaCompostera" },
@@ -248,31 +214,17 @@ export function generarFormularioAntes(compostera_seleccionada) {
         { label: "Observación:", type: "textarea", name: "observacion" }
     ];
 
-    const inputs = {};
+    const inputs = {}; // Objeto para almacenar referencias a los inputs
 
-<<<<<<< HEAD
-    campos.forEach(campo => {
-        const divCampo = document.createElement("div");
-
-        const label = document.createElement("label");
-        label.textContent = campo.label;
-        label.classList.add("block", "text-gray-700", "text-sm", "font-bold", "mb-2");
-        divCampo.appendChild(label);
-=======
     campos.forEach((campo) => {
         const label = document.createElement("label");
         label.textContent = campo.label;
         label.classList.add("block", "text-gray-700", "text-sm", "font-bold", "mb-2");
         formulario.appendChild(label);
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
 
         let input;
         if (campo.type === "select") {
             input = document.createElement("select");
-<<<<<<< HEAD
-            input.classList.add("block", "w-full", "bg-white", "border", "border-gray-300", "rounded", "shadow-sm", "focus:outline-none", "focus:shadow-outline");
-            campo.options.forEach(option => {
-=======
             input.classList.add(
                 "shadow",
                 "appearance-none",
@@ -287,7 +239,6 @@ export function generarFormularioAntes(compostera_seleccionada) {
                 "focus:shadow-outline"
             );
             campo.options.forEach((option) => {
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
                 const optionElement = document.createElement("option");
                 optionElement.value = option;
                 optionElement.textContent = option;
@@ -312,13 +263,10 @@ export function generarFormularioAntes(compostera_seleccionada) {
                 "focus:outline-none",
                 "focus:shadow-outline"
             );
-<<<<<<< HEAD
-=======
             // Verificar si hay datos previos y asignarlos
             if (datosFormularioAntes && datosFormularioAntes[campo.name]) {
                 input.value = datosFormularioAntes[campo.name];
             }
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
         } else {
             input = document.createElement("input");
             input.type = campo.type;
@@ -335,21 +283,13 @@ export function generarFormularioAntes(compostera_seleccionada) {
                 "focus:outline-none",
                 "focus:shadow-outline"
             );
-<<<<<<< HEAD
-=======
             // Verificar si hay datos previos y asignarlos
             if (datosFormularioAntes && datosFormularioAntes[campo.name]) {
                 input.value = datosFormularioAntes[campo.name];
             }
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
         }
 
         input.name = campo.name;
-<<<<<<< HEAD
-        inputs[campo.name] = input;
-        divCampo.appendChild(input);
-        formulario.appendChild(divCampo);
-=======
         inputs[campo.name] = input; // Guardar referencia al input
         formulario.appendChild(input);
 
@@ -357,7 +297,6 @@ export function generarFormularioAntes(compostera_seleccionada) {
         const spacer = document.createElement("div");
         spacer.classList.add("mb-4");
         formulario.appendChild(spacer);
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
     });
 
     // Contenedor de los botones
@@ -368,18 +307,6 @@ export function generarFormularioAntes(compostera_seleccionada) {
     const botonAtras = document.createElement("button");
     botonAtras.type = "button";
     botonAtras.textContent = "Atrás";
-<<<<<<< HEAD
-    botonAtras.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline");
-
-    const botonSiguiente = document.createElement("button");
-    botonSiguiente.type = "button";
-    botonSiguiente.textContent = "Siguiente";
-    botonSiguiente.classList.add("bg-green-500", "hover:bg-green-700", "text-white", "font-bold", "py-2", "px-4", "rounded", "focus:outline-none", "focus:shadow-outline");
-
-    botonSiguiente.addEventListener("click", function () {
-        let temperaturaAmbiental = parseInt(inputs.temperaturaAmbiental.value);
-        let temperaturaCompostera = parseInt(inputs.temperaturaCompostera.value);
-=======
     botonAtras.classList.add(
         "bg-gray-500",
         "hover:bg-gray-700",
@@ -420,7 +347,6 @@ export function generarFormularioAntes(compostera_seleccionada) {
     );
     botonSiguiente.addEventListener("click", () => {
         // Guardar los datos del formulario en la variable datosFormularioAntes
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
         datosFormularioAntes = {
             temperaturaAmbiental: parseInt(inputs.temperaturaAmbiental.value),
             temperaturaCompostera: parseInt(inputs.temperaturaCompostera.value),
@@ -431,23 +357,11 @@ export function generarFormularioAntes(compostera_seleccionada) {
             observacion: inputs.observacion.value
         };
         console.log(datosFormularioAntes);
+
+        // Limpiar el contenedor y generar el siguiente formulario
         generarFormularioDurante(compostera_id);
     });
 
-<<<<<<< HEAD
-    botonAtras.addEventListener("click", () => {
-        contenedor.innerHTML = "";
-        generarFormularioRegistro();
-    });
-
-    const divBotones = document.createElement("div");
-    divBotones.classList.add("flex", "justify-between");
-    divBotones.appendChild(botonAtras);
-    divBotones.appendChild(botonSiguiente);
-
-    formulario.appendChild(divBotones);
-    contenedor.appendChild(formulario);
-=======
     // Agregar los botones al contenedor de botones
     botonesWrapper.appendChild(botonAtras);
     botonesWrapper.appendChild(botonSiguiente);
@@ -460,15 +374,11 @@ export function generarFormularioAntes(compostera_seleccionada) {
 
     // Agregar el wrapper al contenedor principal
     contenedor.appendChild(formularioWrapper);
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
 }
 
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> cb2ef23fdc523aff0194b501405ab597a54e6950
 function generarFormularioDurante(compostera_seleccionada) {
     compostera_id = compostera_seleccionada;
 
@@ -1256,8 +1166,3 @@ async function cerrarCiclo(ciclo_id,estado_ciclo) {
         throw error; // Lanza el error para que pueda ser manejado en otro lugar si es necesario
     }
 }
-
-
-
-
-
