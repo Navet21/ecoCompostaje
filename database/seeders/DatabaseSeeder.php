@@ -40,9 +40,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $adminUser = User::factory()->create([
-            'name' => 'M',
-            'email' => 'm@m.es',
-            'password' => bcrypt('1'),
+            'name' => 'Admin',
+            'email' => 'admin@administrador.es',
+            'password' => bcrypt('1234'),
             'admin' => 1,
             'id_centros' => $centroPrincipal->id,
         ]);
@@ -54,22 +54,38 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Crear 3 centros adicionales en Puerto del Rosario (Fuerteventura)
-        $centros = Centro::factory()->count(3)->state(new \Illuminate\Database\Eloquent\Factories\Sequence(
-            ['codigo' => 12345601, 'nombre' => 'Centro Norte', 'direccion' => 'Calle del Norte'],
-            ['codigo' => 12345602, 'nombre' => 'Centro Sur', 'direccion' => 'Calle del Sur'],
-            ['codigo' => 12345603, 'nombre' => 'Centro Este', 'direccion' => 'Calle del Este']
-        ))->create();
 
-        // Incluir el centro principal en la lista
-        $centros->push($centroPrincipal);
+        // $centros = Centro::factory()->count(3)->state(new \Illuminate\Database\Eloquent\Factories\Sequence(
+        //     ['codigo' => 12345601, 'nombre' => 'I.E.S. Santo Tomás de Aquino', 'direccion' => 'Calle Primero de Mayo'],
+        //     ['codigo' => 12345602, 'nombre' => 'I.E.S. Puerto del Rosario', 'direccion' => 'Calle Gran Canaria'],
+        //     ['codigo' => 12345603, 'nombre' => 'I.E.S. Puerto Cabras Rafael Báez', 'direccion' => 'Calle Aragón']
+        // ))->create();
+
+        // Incluir el centro principal en la lista (modificado para crear un centro, cambiar variable a $centros si se quiere añadir más centros)
+        // $centroPrincipal->push($centroPrincipal);
+        $centros = [$centroPrincipal];
+
+        // Crear 3 composteras para cada centro (modificado para crear un centro, cambiar variable a $centros si se quiere añadir más centros)
+        // foreach ($centroPrincipal as $centro) {
+        //     $composteras = Compostera::factory()->count(3)->state(new \Illuminate\Database\Eloquent\Factories\Sequence(
+        //         ['url' => 'https://compostera1.es', 'tipo' => 'aporte'],
+        //         ['url' => 'https://compostera2.es', 'tipo' => 'maduracion'],
+        //         ['url' => 'https://compostera3.es', 'tipo' => 'degradacion']
+        //     ))->create(['centro_id' => $centro->id]);
 
         // Crear 3 composteras para cada centro
         foreach ($centros as $centro) {
-            $composteras = Compostera::factory()->count(3)->state(new \Illuminate\Database\Eloquent\Factories\Sequence(
-                ['url' => 'https://compostera1.es', 'tipo' => 'aporte'],
-                ['url' => 'https://compostera2.es', 'tipo' => 'maduracion'],
-                ['url' => 'https://compostera3.es', 'tipo' => 'degradacion']
-            ))->create(['centro_id' => $centro->id]);
+            // Crear composteras con IDs fijos (1, 2, 3) para cada centro
+            $composterasData = [
+                ['id' => 1, 'url' => 'https://compostera1.es', 'tipo' => 'aporte', 'centro_id' => $centro->id],
+                ['id' => 2, 'url' => 'https://compostera2.es', 'tipo' => 'maduracion', 'centro_id' => $centro->id],
+                ['id' => 3, 'url' => 'https://compostera3.es', 'tipo' => 'degradacion', 'centro_id' => $centro->id]
+            ];
+
+            // Crear las composteras con los datos fijos
+            foreach ($composterasData as $compostera) {
+                Compostera::create($compostera);
+            }
 
             // Crear 10 bolos para cada centro
             $bolos = Bolo::factory()->count(10)->state(function () {
@@ -90,7 +106,7 @@ class DatabaseSeeder extends Seeder
                     'fecha_fin' => now()->subMonths(2),
                     'terminado' => '1',
                     'bolo_id' => $bolo->id,
-                    'compostera_id' => $composteras[0]->id,
+                    'compostera_id' => 1,
                 ]);
 
                 $ciclo2 = Ciclo::factory()->create([
@@ -98,7 +114,7 @@ class DatabaseSeeder extends Seeder
                     'fecha_fin' => now()->subMonth(),
                     'terminado' => '1',
                     'bolo_id' => $bolo->id,
-                    'compostera_id' => $composteras[1]->id,
+                    'compostera_id' => 2,
                 ]);
 
                 $ciclo3 = Ciclo::factory()->create([
@@ -106,7 +122,8 @@ class DatabaseSeeder extends Seeder
                     'fecha_fin' => now(),
                     'terminado' => '1',
                     'bolo_id' => $bolo->id,
-                    'compostera_id' => $composteras[2]->id,
+                    'compostera_id' => 3,
+                    // $composteras[2]->id
                 ]);
 
                 // Crear registros y datos asociados para cada ciclo
