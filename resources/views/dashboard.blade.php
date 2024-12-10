@@ -23,7 +23,8 @@
             @endif
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <input id="user_id" value="{{ Auth::user()->id }}" name="user_id" type="hidden">
-                <div id="Datos"></div>
+                <div id="Datos">
+                </div>
                 <div id="paginacion" class="flex justify-between mt-4">
                     <button id="btnAnterior"
                         class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded" disabled>

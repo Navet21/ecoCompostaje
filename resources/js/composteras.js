@@ -89,52 +89,48 @@ export async function generarComposteras(mensajeExito = null) {
     datosCompostera.forEach((dato) => {
         const card = document.createElement("div");
         card.className =
-            "bg-white shadow-md rounded-lg p-4 border border-gray-300 w-60 flex flex-col items-start";
-
+            "bg-white shadow-md rounded-lg p-4 border-2 border-green-500 w-60 flex flex-col items-start mb-4"; // Agregada separación vertical con `mb-4`
+    
         const compostera_id = dato.id;
-        console.log(compostera_id);
         const estado = dato.ocupada;
-
+    
         const contenido = document.createElement("div");
+    
+        // Capitalizar manualmente la primera letra
         const tipo = document.createElement("h2");
         tipo.className = "text-lg font-bold mb-2";
-        tipo.textContent = dato.tipo;
+        tipo.textContent = dato.tipo.charAt(0).toUpperCase() + dato.tipo.slice(1); // Capitalización manual
         card.appendChild(tipo);
-
+    
         const estado_compostera = document.createElement("h2");
         estado_compostera.className = "text-sm font-semibold"; // Texto más pequeño
         estado_compostera.textContent = dato.ocupada
             ? "Estado: Ocupada"
             : "Estado: Libre";
         card.appendChild(estado_compostera);
-
-        // Añadir el elemento al contenedor
-        card.appendChild(estado_compostera);
-
+      
         const centroId = document.createElement("p");
-        centroId.className = " text-xs text-gray-700";
+        centroId.className = "text-xs text-gray-700";
         centroId.textContent = `Centro ID: ${dato.centro_id}`;
         card.appendChild(centroId);
-
+    
         const boton = document.createElement("button");
         boton.className = "bg-green-500 text-white px-4 py-2 rounded";
         boton.textContent = "Nuevo Registro";
-
+    
         // Deshabilitar el botón según las condiciones de los bolos
-        console.log(bolosCiclo1y2);
-        console.log("Longitud de bolo con ciclo 1 terminado: ", bolosCiclo1y2);
         if (compostera_id == 2 && bolosSoloCiclo1.length < 1) {
             boton.disabled = true;
             boton.classList.add("bg-gray-700", "cursor-not-allowed");
             boton.classList.remove("bg-green-500");
         }
-
+    
         if (compostera_id === 3 && bolosCiclo1y2.length == 0) {
             boton.disabled = true;
             boton.classList.add("bg-gray-400", "cursor-not-allowed");
             boton.classList.remove("bg-green-500");
         }
-
+    
         boton.addEventListener("click", () => {
             if (compostera_id == 1) {
                 if (estado) {
@@ -174,11 +170,11 @@ export async function generarComposteras(mensajeExito = null) {
                 }
             }
         });
-
+    
         fragmento.appendChild(card);
         card.appendChild(contenido);
         card.appendChild(boton);
-        fragmento.appendChild(card);
+        fragmento.appendChild(card)
     });
 
     // Agregar el fragmento al contenedor
